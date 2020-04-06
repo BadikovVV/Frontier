@@ -1,0 +1,124 @@
+.ps_popup_close_button {
+    background-color: rgba(0, 0, 64, 0.8);
+    border: 2px solid #acf;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    right: -24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-family: helvetica, arial;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.9);
+    top: -24px;
+    width: 24px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
+    border-radius: 15px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000; 
+}
+.ps_popup_darkening {
+    background-color: rgba(0, 0, 0, 0.25); 
+    display: none; 
+    position: fixed; 
+    z-index: 99999;
+    top: 0; 
+    right: 0; 
+    bottom: 0; 
+    left: 0;
+}
+.ps_popup_main_window {
+    background: #fff;
+    max-width: 600px;
+    max-height: 800px;
+    width:70%;
+    margin: 5% auto;
+    padding: 5px 20px 13px 20px;
+    border: 10px solid #def;
+    position: relative; 
+    /*--CSS3 Закругленные углы--*/
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+/* прямоугольная иконка */
+.rectdivicon {
+    color: #000;
+    background: #BBB;
+    border: 1px solid #000;
+    font-size: 8px;
+    opacity: 1.0;
+    background-color: rgba(235, 245, 255, 0.67);
+}
+/* круглая иконка или с закругленными углами радиус 5px */
+.rounddivicon7 {
+    color: #000;
+    /*background: #777;*/
+    border: 1px solid rgba(235, 245, 255, 0.5);
+    font-size: 10px;
+    opacity: 1.0;
+    background-color: rgba(235, 245, 255, 0.67);
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    border-radius: 7px;
+}
+/* круглая иконка или с закругленными углами радиус 12px */
+.rounddivicon12 {
+    color: #000;
+    /*background: #777;*/
+    border: 1px solid #000;
+    font-size: 8px;
+    opacity: 1.0;
+    background-color: rgba(235, 245, 255, 0.67);
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    border-radius: 12px;
+}
+/* круглая иконка или с закругленными углами радиус 6px */
+.rounddivicon8 {
+    color: #000;
+    /*background: #777;*/
+    border: 1px solid #000;
+    font-size: 10px;
+    opacity: 1.0;
+    background-color: rgba(235, 245, 255, 0.67);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+}
+/* иконка - текстовый символ 24 px */
+.tsdivicon24 {
+    color: #0f0;
+    /*background: #777;*/
+    font-size: 24px;
+    opacity: 1.0;
+    background-color: rgba(235, 245, 255, 0.0);
+}
+/* выделенный текст 1 */
+.emtextred {
+    color: #900;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+.emtextgreen {
+    color: #090;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+.emtextblue {
+    color: #009;
+    font-size: 1.1em;
+    font-weight: 600;
+}

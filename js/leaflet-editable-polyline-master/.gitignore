@@ -1,0 +1,6 @@
+tags
+*.swp
+*.swo
+examples/leaflet.css
+examples/leaflet.js
+dist/*

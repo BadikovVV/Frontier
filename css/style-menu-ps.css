@@ -1,0 +1,103 @@
+#conteiner{
+    /*width:1000px;*/
+    display:block;
+    width:100%;
+    height:auto;
+    margin:0px auto;
+    padding-top:10px;
+}
+@font-face{
+    font-family: 'Ariadna';
+    src: url('Ariadna.ttf') format('truetype');
+}
+#branch{
+    display:block;
+    /*margin-top:100;*/
+    color:green;
+    font-size:24pt;
+    font-style:italic;
+    font-family:'Ariadna';
+    /*font-family:'Times New Roman';*/
+    /*font-family:'Arial';*/
+}
+
+#menu1{
+    position:relative;
+    display:block;
+    width:100%;
+    height:auto;
+    z-index:10;
+}
+#menu1 ul{
+    position:relative;
+    display:block;
+    margin:0px;
+    padding:0px;
+    width:100%;
+    height:auto;
+    list-style:none;
+    background:#3DAFD3;
+    /*background:#F3A601;*/
+}
+#menu1 > ul::after{
+    display:block;
+    width:100%;
+    height:0px;
+    clear:both;
+    content:" ";
+}
+#menu1 ul li{
+    position:relative;
+    display:block;
+    float:left;
+    width:auto;
+    height:auto;
+}
+#menu1 ul li a{
+    display:block;
+    padding:9px 25px 0px 25px;
+    font-size:14px;
+    font-family:Arial, sans-serif;
+    color:#ffffef;
+    line-height:1.3em;
+    text-decoration:none;
+    font-weight:bold;
+    text-transform:uppercase;
+    height:36px;
+    box-sizing:border-box;
+}
+#menu1 ul li > a:hover, #menu1 ul li:hover > a{
+    /*background:#EBBD5B;*/
+    background:#80FFFF;
+    color:#2B45E0;
+}
+#menu1 ul li ul{
+    position:absolute;
+    top:36px;
+    left:0px;
+    display:none;
+    width:200px;
+    /*background:#EBBD5B;*/
+    background:#3DAFD3;
+}
+#menu1 ul li:hover ul{display:block;}
+#menu1 ul li ul li{
+    float:none;
+    width:100%;
+}
+#menu1 ul li ul li a{
+    display:block;
+    text-transform:none;
+    height:auto;
+    padding:7px 25px;
+    width:100%;
+    box-sizing:border-box;
+    border-top:1px solid #ffffff;
+}
+#menu1 ul li ul li:first-child a{border-top:0px;}
+#menu1 ul li ul li a:hover{
+    /*background:#FDDC96;*/
+    background:#70DFDF;
+    /*color:#6572BC;*/
+    color:#4060E0;
+}

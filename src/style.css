@@ -1,0 +1,59 @@
+@charset "windows-1251";
+
+a img { border: none;}
+
+BODY {COLOR: #1c2f2c; FONT-FAMILY: Verdana, Arial, Tahoma; FONT-SIZE: 8pt;}
+TD {COLOR: #000000f; FONT-FAMILY: Verdana, Arial, Tahoma; FONT-SIZE: 8pt;}
+A:link {COLOR: #405789;font: bold;font-family:tahoma; font-size:8pt; TEXT-DECORATION: none;}
+A:active {COLOR: #405789;font: bold;font-family:tahoma; font-size:8pt; TEXT-DECORATION: none;}
+A:visited {COLOR: #405789;font: bold;font-family:tahoma; font-size:8pt; TEXT-DECORATION: none;}
+A:hover {COLOR: #2670D6;font: bold;font-family:tahoma; font-size:8pt; TEXT-DECORATION: none;}
+.menu:link {COLOR: white;font-weight:bold; font-family:verdana, arial; font-size:9pt; TEXT-DECORATION: none;}
+.menu:active {COLOR: white;font-weight:bold; font-family:verdana, arial; font-size:9pt; TEXT-DECORATION: underline;}
+.menu:visited {COLOR: white;font-weight:bold; font-family:verdana, arial; font-size:9pt; TEXT-DECORATION: none;}
+.menu:hover {COLOR: #FFBC40;font-weight:bold; font-family:verdana, arial; font-size:9pt; TEXT-DECORATION: none;}
+.sm:link {COLOR: #gray; font-family:verdana, arial; font-size:6pt; TEXT-DECORATION: none;}
+.sm:active {COLOR: gray; font-family:verdana, arial; font-size:6pt; TEXT-DECORATION: underline;}
+.sm:visited {COLOR: #gray; font-family:verdana, arial; font-size:6pt; TEXT-DECORATION: none;}
+.sm:hover {COLOR: white; font-family:verdana, arial; font-size:6pt; TEXT-DECORATION: none;}
+.edit { border-top: medium none; background: url(../image/edit.bmp); width: 100px; border-bottom: medium none; border-right-color: gray; border-left-color: gray; text-align: center; border-left: ridge}
+.baton { background: url(../image/edit22.bmp); FONT-SIZE: 10pt;}
+.button2 { BORDER-RIGHT: #003 1px solid; BORDER-TOP: #4f718a 1px solid; BACKGROUND: #414d59; BORDER-LEFT: #4f718a 1px solid; COLOR: #fff; BORDER-BOTTOM: #003 1px solid;}
+.textarea2 { background: url(../image/edit22.bmp); font: 1em; background-repeat: repeat-x; background-position: bottom;}
+FORM { PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px;}
+.verticaltext { writing-mode: tb-rl; filter: flipv fliph; }
+.class_over { BACKGROUND: #E6F0FF;}
+.class_out { BACKGROUND: #FFFFFF;}
+.class_click { BACKGROUND: #E6F0FF;}
+
+.sort-table {font: Icon; border: 1px solid ThreeDShadow; background: Window; color: WindowText;}
+.sort-table thead {background:	ButtonFace;}
+.sort-table td {border: 1px solid;border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;}
+.sort-table thead td {border: 1px solid;border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;}
+.sort-table thead td:active {border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;}
+.sort-table thead td[_sortType=None]:active { border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;}
+
+.tooltip{
+z-index:1;
+text-decoration: none;
+}
+.tooltip:hover{
+position:relative; 
+
+}
+.tooltip span{
+display:none;
+width: 150px;
+}
+.tooltip:hover span{
+display:block;
+position:absolute;
+float:left;
+bottom: 15px;
+left:10px;
+background:#FFFF00;
+border:1px dotted black;
+color:#444;
+padding:2px;
+z-index:2;
+} 

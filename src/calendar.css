@@ -1,0 +1,40 @@
+.mc-div {
+	padding:2;
+	background-color:#9ac0d2;
+	border:2px solid #377290; 
+	border-top:2px solid buttonhighlight; 
+	border-left:2px solid white;
+}
+.mc-table-c {
+	font: normal 11px Verdana;
+}
+.mc-td {
+	border: 1px #D3E3EB outset;
+	cursor: default;
+	font: bold 9px;
+	text-align:center;
+}
+.mc-td-cu {
+	background-color:#F3F7FA;
+}
+.mc-td-ch {
+	background-color:#D3E3EB;
+	color:red;
+}
+.mc-td-cd {
+	background-color:#ffcc33;
+	border-style: inset;
+}
+.mc-cn {
+	color: #a0a0a0;
+}
+.mc-th-c {
+	font-weight: bold; 
+	background-color: #4D91B3; 
+	color: white;
+	border: 1px #D3E3EB outset;
+
+}
+.mc-select-c {
+	font: normal 10px Arial;
+}

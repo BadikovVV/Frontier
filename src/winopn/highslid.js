@@ -1132,7 +1132,7 @@ setPos: function(i) {
 }
 };
 
-hs.Expander = function(a, params, custom, contentType) {
+hs.Expander = function(a, params, custom, contentType) {
 	if (document.readyState && hs.ie && !hs.isReady) {
 		hs.addEventListener(document, 'ready', function() {
 			new hs.Expander(a, params, custom, contentType);

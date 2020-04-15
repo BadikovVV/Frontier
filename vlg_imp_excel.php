@@ -1210,7 +1210,7 @@ function importSPARK($fn){
     $highestRow = $aSheet->getHighestRow();
     $highestColumn = $aSheet->getHighestColumn();
     $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-    SQL("delete from sparkData")->commit();
+    SQL("delete from private_sector.tmp_sparkData")->commit();
     $numLoadRecord=0;
     for($rowNum=7;$rowNum<$highestRow; $rowNum++){
         $name = iconv('UTF-8', 'CP1251', cVal($aSheet, 2, $rowNum, 'String'));
@@ -1219,7 +1219,7 @@ function importSPARK($fn){
         $Activity = iconv('UTF-8', 'CP1251', cVal($aSheet, 9, $rowNum, 'String'));
         $PravForm = iconv('UTF-8', 'CP1251', cVal($aSheet, 11, $rowNum, 'String'));
         $viruchka = iconv('UTF-8', 'CP1251', cVal($aSheet, 15, $rowNum, 'Number'));
-        $sqlStr = "INSERT INTO `private_sector`.`sparkData`
+        $sqlStr = "INSERT INTO `private_sector`.`tmp_sparkData`
             (`INN`,
             `name`,
             `adrStr`,

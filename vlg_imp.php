@@ -50,7 +50,7 @@ function vlg_imp($mode){
     switch($mode){
 // добавлено для загрузки СПАРКа        
     case "sparkData":
-        echo "<b>Загрузка (дополнение) СМР</b>";
+        echo "<b>Загрузка  данных из СПАРКа</b>";
         //exit();
         echo "<form name='saddress' method='post' action='./?c=6&action=sparkData' enctype='multipart/form-data'>";
         if($loadFile=choosefileload()){

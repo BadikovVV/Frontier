@@ -1212,15 +1212,19 @@ function importSPARK($fn){
     $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
     SQL("delete from private_sector.tmp_sparkData")->commit();
     $numLoadRecord=0;
-    for($rowNum=7;$rowNum<$highestRow; $rowNum++){
+    for($rowNum=5;$rowNum<$highestRow; $rowNum++){
         $name = iconv('UTF-8', 'CP1251', cVal($aSheet, 1, $rowNum, 'String'));
         $adrStr = iconv('UTF-8', 'CP1251', cVal($aSheet, 3, $rowNum, 'String'));
         $inn = iconv('UTF-8', 'CP1251', cVal($aSheet, 5, $rowNum, 'String'));
         $Activity = iconv('UTF-8', 'CP1251', cVal($aSheet, 8, $rowNum, 'String'));
         $PravForm = iconv('UTF-8', 'CP1251', cVal($aSheet, 10, $rowNum, 'String'));
         $viruchka = iconv('UTF-8', 'CP1251', cVal($aSheet, 14, $rowNum, 'Number'));
-        $viruchka = emty($viruchka)?0.0:$viruchka;
-        $regnum = iconv('UTF-8', 'CP1251', cVal($aSheet, 2, $rowNum, 'String')).dechex(crc32($adrStr));
+	if( empty($viruchka))
+		$viruchka="0.0";
+	//var_dump($viruchka);
+        //$viruchka = ( emty($viruchka) ) ? "0.0" : $viruchka;  ///  bug is here
+	//echo "<br> $viruchka";
+        $regnum = iconv('UTF-8', 'CP1251', cVal($aSheet, 2, $rowNum, 'String')).dechex(crc32($adrStr)).dechex(crc32($name));
         $sqlStr = "INSERT INTO `private_sector`.`tmp_sparkData`
             (`INN`,
             `name`,
@@ -1241,6 +1245,8 @@ function importSPARK($fn){
         SQL($sqlStr)->commit();
         $numLoadRecord++;
     }    
+    SQL("DELETE FROM `private_sector`.`tmp_sparkData` WHERE regnum ='00'")->commit();
+    $numLoadRecord=rSQL("SELECT count(1) as recLoad  FROM private_sector.tmp_sparkData")["recLoad"];
     echo "<br>Загружено ".$numLoadRecord ." строк";
 }
 ////////////////////////////////////////////////////////////////////////////////

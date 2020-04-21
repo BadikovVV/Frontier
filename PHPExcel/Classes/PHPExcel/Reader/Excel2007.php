@@ -108,7 +108,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
             }
             $zip->close();
         }
-	echo "<p>Hernia $xl</p>";
+
         return $xl;
     }
 

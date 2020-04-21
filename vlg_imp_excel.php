@@ -1219,6 +1219,7 @@ function importSPARK($fn){
         $Activity = iconv('UTF-8', 'CP1251', cVal($aSheet, 9, $rowNum, 'String'));
         $PravForm = iconv('UTF-8', 'CP1251', cVal($aSheet, 11, $rowNum, 'String'));
         $viruchka = iconv('UTF-8', 'CP1251', cVal($aSheet, 15, $rowNum, 'Number'));
+        $regnum = iconv('UTF-8', 'CP1251', cVal($aSheet, 16, $rowNum, 'String')).dechex(crc32($adrStr));
         $sqlStr = "INSERT INTO `private_sector`.`tmp_sparkData`
             (`INN`,
             `name`,
@@ -1227,14 +1228,15 @@ function importSPARK($fn){
             `PravForm`,
             `viruchka`,
             `shirota`,
-            `dolgota`)
+            `dolgota`
+            `regnum`)
             VALUES
             ('".$inn."','".
             $name ."','".
             $adrStr ."','".
             $Activity ."','".
             $PravForm ."',".
-            $viruchka .",0.0,0.0);" ; //широта и долгода по умолчанию =0.0
+            $viruchka .",0.0,0.0,".$regnum. ");" ; //широта и долгода по умолчанию =0.0
         SQL($sqlStr)->commit();
         $numLoadRecord++;
     }    

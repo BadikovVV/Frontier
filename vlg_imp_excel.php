@@ -1213,13 +1213,13 @@ function importSPARK($fn){
     SQL("delete from private_sector.tmp_sparkData")->commit();
     $numLoadRecord=0;
     for($rowNum=7;$rowNum<$highestRow; $rowNum++){
-        $name = iconv('UTF-8', 'CP1251', cVal($aSheet, 2, $rowNum, 'String'));
-        $adrStr = iconv('UTF-8', 'CP1251', cVal($aSheet, 4, $rowNum, 'String'));
-        $inn = iconv('UTF-8', 'CP1251', cVal($aSheet, 6, $rowNum, 'String'));
-        $Activity = iconv('UTF-8', 'CP1251', cVal($aSheet, 9, $rowNum, 'String'));
-        $PravForm = iconv('UTF-8', 'CP1251', cVal($aSheet, 11, $rowNum, 'String'));
-        $viruchka = iconv('UTF-8', 'CP1251', cVal($aSheet, 15, $rowNum, 'Number'));
-        $regnum = iconv('UTF-8', 'CP1251', cVal($aSheet, 16, $rowNum, 'String')).dechex(crc32($adrStr));
+        $name = iconv('UTF-8', 'CP1251', cVal($aSheet, 1, $rowNum, 'String'));
+        $adrStr = iconv('UTF-8', 'CP1251', cVal($aSheet, 3, $rowNum, 'String'));
+        $inn = iconv('UTF-8', 'CP1251', cVal($aSheet, 5, $rowNum, 'String'));
+        $Activity = iconv('UTF-8', 'CP1251', cVal($aSheet, 8, $rowNum, 'String'));
+        $PravForm = iconv('UTF-8', 'CP1251', cVal($aSheet, 10, $rowNum, 'String'));
+        $viruchka = iconv('UTF-8', 'CP1251', cVal($aSheet, 14, $rowNum, 'Number'));
+        $regnum = iconv('UTF-8', 'CP1251', cVal($aSheet, 2, $rowNum, 'String')).dechex(crc32($adrStr));
         $sqlStr = "INSERT INTO `private_sector`.`tmp_sparkData`
             (`INN`,
             `name`,
@@ -1228,7 +1228,7 @@ function importSPARK($fn){
             `PravForm`,
             `viruchka`,
             `shirota`,
-            `dolgota`
+            `dolgota`,
             `regnum`)
             VALUES
             ('".$inn."','".

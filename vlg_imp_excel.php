@@ -1236,7 +1236,7 @@ function importSPARK($fn){
             $adrStr ."','".
             $Activity ."','".
             $PravForm ."',".
-            $viruchka .",0.0,0.0,".$regnum. ");" ; //широта и долгода по умолчанию =0.0
+            $viruchka .",0.0,0.0,'".$regnum. "');" ; //широта и долгода по умолчанию =0.0
         SQL($sqlStr)->commit();
         $numLoadRecord++;
     }    

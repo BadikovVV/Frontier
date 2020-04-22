@@ -1226,27 +1226,45 @@ function importSPARK($fn){
 	//echo "<br> $viruchka";
         $regnum = iconv('UTF-8', 'CP1251', cVal($aSheet, 2, $rowNum, 'String')).dechex(crc32($adrStr)).dechex(crc32($name));
         $sqlStr = "INSERT INTO `private_sector`.`tmp_sparkData`
-            (`INN`,
-            `name`,
-            `adrStr`,
-            `Activity`,
-            `PravForm`,
-            `viruchka`,
-            `shirota`,
-            `dolgota`,
-            `regnum`)
+            (`INN`, `name`, `adrStr`, `Activity`, `PravForm`,`viruchka`,
+            `shirota`, `dolgota`, `regnum`)
             VALUES
             ('".$inn."','".
             $name ."','".
             $adrStr ."','".
             $Activity ."','".
             $PravForm ."',".
-             $viruchka.",0.0,0.0,'".$regnum. "');" ; //широта и долгода по умолчанию =0.0
+             $viruchka.",-1.0,-1.0,'".$regnum. "');" ; //широта и долгода по умолчанию =-1.0
         SQL($sqlStr)->commit();
         $numLoadRecord++;
     }    
     SQL("DELETE FROM `private_sector`.`tmp_sparkData` WHERE regnum ='00'")->commit();
     $numLoadRecord=rSQL("SELECT count(1) as recLoad  FROM private_sector.tmp_sparkData")["recLoad"];
+    // проверить есть ли в основной таблице уже такие данные
+    //если есть , то их обновить 
+    // новые вставить
+    // строка на добавление новых записей
+    $sqlInStr="INSERT INTO `private_sector`.`sparkData`
+    (`INN`,`name`,`adrStr`,`Activity`,`PravForm`,`viruchka`,`shirota`,`dolgota`,
+    `regnum`)
+    select a.* from tmp_sparkData  a  left outer join  sparkData  b
+        on  a.regnum = b.regnum
+        where b.regnum is null";
+   // строка для обновления уже существующих
+    $sqlUpStr=" update sparkData ,tmp_sparkData 
+    SET 
+    sparkData.INN = tmp_sparkData.INN,
+    sparkData.name =tmp_sparkData.name,
+    sparkData.adrStr = tmp_sparkData.adrStr,
+    sparkData.Activity = tmp_sparkData.Activity,
+    sparkData.PravForm = tmp_sparkData.PravForm,
+    sparkData.viruchka = tmp_sparkData.viruchka,
+    sparkData.shirota = tmp_sparkData.shirota,
+    sparkData.dolgota = tmp_sparkData.dolgota,
+    sparkData.regnum = tmp_sparkData.regnum
+    where sparkData.regnum = tmp_sparkData.regnum ";    
+    SQL($sqlUpStr)->commit();
+    SQL($sqlInStr)->commit();
     echo "<br>Загружено ".$numLoadRecord ." строк";
 }
 ////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,42 @@ function noSQLInj($text){
     return true;            
   }
 }
+// процедура запуска функции в фоне 
+// через внешний файл
+function runPHPfunc($funcName)
+{
+    $url="http://localhost/phpServices.php?func=".$funcName;
+    $port=80;
+    $curl_handle = curl_init();
+    curl_setopt($curl_handle, CURLOPT_URL, $url);
+    curl_setopt($curl_handle, CURLOPT_PORT, $port);
+    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl_handle, CURLOPT_HTTPHEADER, array('Host: ' . $_SERVER['HTTP_HOST']));
 
+/*Опции запроса, чтобы не дожидаться ответа*/
+    curl_setopt($curl_handle, CURLOPT_TIMEOUT, 1);
+    curl_setopt($curl_handle, CURLOPT_NOSIGNAL, 1);
+    curl_setopt($curl_handle, CURLOPT_HEADER, false);
+    curl_setopt($curl_handle, CURLOPT_NOBODY, true);
+    curl_setopt($curl_handle, CURLOPT_FRESH_CONNECT, true);
+
+/*Если используется HTTPAUTH*/
+    if( !empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) ) {
+        curl_setopt($curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($curl_handle, CURLOPT_USERPWD, $_SERVER['PHP_AUTH_USER'] . ':' . $_SERVER['PHP_AUTH_PW']);
+    }
+
+/*Код можно прикрепить, чтобы при обработке проверить подлинность запроса*/
+    $code=crc32($funcName); //  в качестве кода  - контрольная сумма названия ф-ции
+    if( $code ) {
+        curl_setopt($curl_handle, CURLOPT_COOKIE, 'curl_code=' . $code);
+    }
+
+/*Выполняем*/
+    curl_exec($curl_handle);
+    curl_close($curl_handle);
+    
+}
 // вывод сообщения в протокол
 // необходимы права на соответствующую директорию
 function prot($lVar) {

@@ -293,6 +293,7 @@ if (!defined("LOGINED")) {
                         "title='существующие абоненты (для отображения увеличьте масштаб (до 500 м [14]) и нажмите [Обновить карту])' "
                         . " disabled=true");?>
                 >
+            
             Неточн.<input type="checkbox" name="mapfilter_stray" title='объекты с неточными координатами' value='true'
                 onchange = 'if (this.checked) document.cookie = "mapfilter[stray]=1"; else document.cookie = "mapfilter[stray]=0";'
                 <?php echo ((isset($_COOKIE['mapfilter']['stray']) and $_COOKIE['mapfilter']['stray']==1) ? "checked" : " ");?>>

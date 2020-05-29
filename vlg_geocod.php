@@ -1,13 +1,31 @@
 <?php
-define('__ROOT__',dirname(__FILE__));
+if (!defined('__ROOT__'))
+	define('__ROOT__',dirname(__FILE__));
 require_once (__ROOT__.'/vlg_util.php');
-function geocod($adrStr){
+/* */
+function geocod($adrStr,$geosys=1){
+	switch ($geosys){
+		case 1: 
+			return geocodSputnik($adrStr);
+			break;
+		default:
+			error_log("gecod Wrong id for geocoding system =".$geosys );
+			return geocodSputnik($adrStr);
+	}
+}
+
+function geocodSputnik($adrStr){
 //header("Content-Type: application/xml; charset=UTF-8");
 // РЅР° РІС…РѕРґ СЃС‚РѕСЂРѕРєСѓ СЃ Р°РґСЂРµСЃРѕРј, РЅР° РІС‹С…РѕРґ - РјР°СЃСЃРёРІ  РёР· С€РёСЂРѕС‚С‹ Рё РґРѕР»РіРѕС‚С‹)
 	$rezStr="";
-        //$adrStr=urlencode(iconv('CP1251', 'UTF-8', $searchaddress)
-	$rezStr=getUrl("search.maps.sputnik.ru/search/addr?format=xml&q=".$adrStr);
-//        .urlencode(iconv('CP1251','UTF-8',$adrStr)));
+//        $adrStr=urlencode(iconv('CP1251', 'UTF-8', $searchaddress)
+	$rezStr=getUrl("search.maps.sputnik.ru/search/addr?format=xml&q=".urlencode(iconv('CP1251','UTF-8',$adrStr)));
+	if( stripos($rezStr,"html")==true){
+		// if server gives bad response (not xml file)
+		error_log("Bad response from server. Address was ".$adrStr);
+		error_log("Request was search.maps.sputnik.ru/search/addr?format=xml&q=".urlencode(iconv('CP1251','UTF-8',$adrStr)));
+		return array("lat"=> -1.0,"lon"=>-1.0);
+	}
 	$findFull=False;
 	$fnd=False;
 	$lat=0.0;
@@ -43,31 +61,33 @@ function geocod($adrStr){
 // 
 function getSparkC()
 {
-    $sqlStr = "SELECT regnum, adrStr FROM private_sector.sparkData
-            where shirota=<0.0 ";
+    $sqlStr = "SELECT regnum, adrStr FROM private_sector.sparkData 
+            where shirota<=0.0";  //limit 5";
     $rows = qSQL($sqlStr);
     $okRec=0;//к-во записей с определеными координатами
     $badRec=0; // к-во записей для которых координаты не определены
-    error_log(date(DATE_RFC822)." Проставляем координаты для организаций из СПАРКа");
-        while ($row = mysql_fetch_array($rows)) {
-            $coords= getCoord($row["adrStr"]);
+    error_log(" Start geocoding from SPARK data");
+	
+        while ($row = mysql_fetch_array($rows,MYSQL_ASSOC)) {
+            $coords= geocod($row["adrStr"]);
+//	    error_log("lat=".$coords["lat"]." for address ".$row["adrStr"]);
             $sqlStr = "update sparkData  
             set 
-            sparkData.shirota =".$coords['lat']
-            ." ,sparkData.dolgota =". $coords['lon']
-            . "where  where sparkData.regnum ="
-            . $row['regnum'];
+            sparkData.shirota =".$coords["lat"]
+            ." ,sparkData.dolgota =". $coords["lon"]
+            . " where  sparkData.regnum ='"
+            . $row['regnum']."'";
             SQL($sqlStr)->commit();
-            if ($coords['lat'] == 0.0) {
+            if ($coords['lat'] <= 0.0) {
                 $badRec++;
             } 
             else {
                 $okRec++;
             }
     }
-    error_log("Найдены координаты для ".$okRec." адресов");
-    error_log("Не найдены координаты для ".$badRec." адресов");
-    error_log(date(DATE_RFC822)." Завершено назначение координат для организаций из СПАРКа");
+    error_log("Finding  ".$okRec." location points from SPARK");
+    error_log("Cannot find ".$badRec." location points from SPARK");
+    error_log(" Finishing geocoding from SPARK data");
         
 }
 //$z = geocod('[etnf');

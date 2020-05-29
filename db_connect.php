@@ -25,6 +25,8 @@ if ($mysqli->connect_error) {
     error_log('Connect Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
     exit("mysqli connect error");
 }
+else
+	define('DBCONNECT',1);
 $mysqli->autocommit(FALSE);
 $mysqli->set_charset("cp1251");
 //

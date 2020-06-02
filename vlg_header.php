@@ -103,7 +103,10 @@ if (@$_COOKIE['rtcomug'][0] and @ $_COOKIE['rtcomug'][0] != '' and @ $_COOKIE['r
 } // ^^ Если в куках логин и пароль ^^
 //													} // Есть есть куки у пользователя
 else { // ЕСЛИ НЕТ
-  if(noSQLInj($_POST["login"])){
+//echo "<br> No cookies ? no login? ".isset($_POST["login"]);
+
+  if(isset($_POST["login"]) && noSQLInj($_POST["login"])){
+//	echo "<br> trying to login";
     // Попросим авторизоваться
     if (@$_GET['action'] == "login" and @ $_POST["login"] and @ $_POST["pass"] and @ $_GET['action'] != "logout") {
         //echo "Авторизация началась...<br>";
@@ -174,7 +177,13 @@ else { // ЕСЛИ НЕТ
         }
     } // ^^ ЕСЛИ НЕТ ^^ //else echo "<br>Куков нет и авторизации нет";
   } else {
-    echo 'обратитесь к Администратору ресурса';
+	if (stripos($_SERVER['PHP_SELF'],'index.php')==false){
+		echo "<meta http-equiv=\"Refresh\" content=\"2; url=/index.php?c=4\">";
+	};
+//	else
+//	{
+//		    echo 'обратитесь к Администратору ресурса';
+//	};
     return;
   }
 } 

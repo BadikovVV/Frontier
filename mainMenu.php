@@ -7,13 +7,14 @@ if (!defined('DBCONNECT'))
 //require_once(__ROOT__.'/vlg_header.php'); 
 /* */
 echo sprintf("<link  rel=\"stylesheet\" type=\"text/css\" href=\"css/mainMenu.css\">");
-function getCat($mysqli){
+function getCat(){
     $sqlStr="SELECT * FROM private_sector.menu";
     $res=qSQL($sqlStr);
     //—ÓÁ‰‡ÂÏ Ï‡ÒË‚ „‰Â ÍÎ˛˜ Ï‡ÒÒË‚‡ ˇ‚ÎˇÂÚÒˇ ID ÏÂÌ˛
     $cat = array();
-    while($row = $res->fetch_assoc()){
-        $cat[$row['id']] = $row;
+    while($row = mysql_fetch_array($res)){ //$res->fetch_assoc()){
+//	print_r($row);
+        $cat[(int)$row["id"]] = $row;
     }
     return $cat;
 }
@@ -32,12 +33,9 @@ function getTree($dataset) {
     return $tree;
 }
 //œÓÎÛ˜‡ÂÏ ÔÓ‰„ÓÚÓ‚ÎÂÌÌ˚È Ï‡ÒÒË‚ Ò ‰‡ÌÌ˚ÏË
-$cat  = getCat($mysqli);
+$cat  = getCat();
 //—ÓÁ‰‡ÂÏ ‰Â‚Ó‚Ë‰ÌÓÂ ÏÂÌ˛
 $tree = getTree($cat);
-
-
-
 //$sqlStr="SELECT * FROM private_sector.menu";
 //$result=qSQL($sqlStr);
 //$menuArray=array();
@@ -49,12 +47,36 @@ $tree = getTree($cat);
 //		$menuArray[$pr]=array();
 //	$menuArray[$pr][]= array("id"=>$id,"title"=>$title);
 //}
-echo  "<pre>";
-print_r($tree);
-echo  "</pre>";
+//–®–∞–±–ª–æ–Ω –¥–ª—è –≤—ã–≤–æ–¥–∞ –º–µ–Ω—é –≤ –≤–∏–¥–µ –¥–µ—Ä–µ–≤–∞
+	function tplMenu($category){
+	    $menu = '<li>
+	        <a href="#" title="'. iconv("CP1251","UTF-8",$category['title']) .'">'.
+	        iconv("CP1251","UTF-8",$category['title']).'</a>';
+	        if(isset($category['childs'])){
+	            $menu .= '<ul>'. showCat($category['childs']) .'</ul>';
+	        }
+	    $menu .= '</li>';
+	    return $menu;
+	}
+	/**
+	* –†–µ–∫—É—Ä—Å–∏–≤–Ω–æ —Å—á–∏—Ç—ã–≤–∞–µ–º –Ω–∞—à —à–∞–±–ª–æ–Ω
+	**/
+	function showCat($data){
+	    $string = '';
+	    foreach($data as $item){
+	        $string .= tplMenu($item);
+	    }
+	    return $string;
+	}
+	//–ü–æ–ª—É—á–∞–µ–º HTML —Ä–∞–∑–º–µ—Ç–∫—É
+	$cat_menu=showCat($tree);
+//	$cat_menu = iconv('UTF-8','CP1251',$cat_menu);
+	//–í—ã–≤–æ–¥–∏–º –Ω–∞ —ç–∫—Ä–∞–Ω
 echo '<div id="container">';
 echo" <nav>";
+//print_r($cat);
 
+	echo '<ul>'. $cat_menu .'</ul>';
 //foreach ($menuArray as  )
 echo "</div> </nav>";
 ?>

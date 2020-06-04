@@ -50,7 +50,7 @@ $tree = getTree($cat);
 //Шаблон для вывода меню в виде дерева
 	function tplMenu($category){
 	    $menu = '<li>
-	        <a href="#" title="'. iconv("CP1251","UTF-8",$category['title']) .'">'.
+	        <a href="'.$category['url'].'" title="'. iconv("CP1251","UTF-8",$category['title']) .'">'.
 	        iconv("CP1251","UTF-8",$category['title']).'</a>';
 	        if(isset($category['childs'])){
 	            $menu .= '<ul>'. showCat($category['childs']) .'</ul>';

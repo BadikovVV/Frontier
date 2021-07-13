@@ -13,13 +13,13 @@ function clusterStat(){
         <td align='center' class='clusterheader'><b>Заявки</b></td></tr>";
 // Вывод кластеров
     $result_claster = qSQL("SELECT * FROM cluster order by level,id");
-    while ($row_claster = mysql_fetch_array($result_claster)) {
+    while ($row_claster = $result_claster->fetch_array()) {
         $result_point=qSQL("SELECT psl.arm_id, psl.list_id, psld.claster_id
                     FROM ps_list psl left join ps_list_dop psld on psl.list_id=psld.list_id
                     WHERE latlng<>'' and psld.claster_id=".$row_claster["id"]);
         $k2 = 0;
         $arrID_ARM = array();
-        while ($row_point = mysql_fetch_array($result_point)) {
+        while ($row_point = $result_point->fetch_array()) {
             $k2++;
             array_push($arrID_ARM, $row_point["arm_id"]);
         }
@@ -44,7 +44,7 @@ function clusterMember(){
     // order by level desc !!! т.е. приоритет по уровню у более мелких кластеров
     $cursor_cluster = qSQL("SELECT id,coord FROM cluster order by level");
     $i=0;
-    while ($row_cluster = mysql_fetch_array($cursor_cluster)) {
+    while ($row_cluster = $cursor_cluster->fetch_array()) {
         $clusters[$i][0]=$row_cluster["id"];
         $clusters[$i][1]=$row_cluster["coord"];
         // Заполнение массива вершин многоугольника
@@ -61,7 +61,7 @@ function clusterMember(){
     $clustermembercount=0;
     $testclustercount=0;
     $nolatlngcount=0;
-    while ($row_cids = mysql_fetch_array($result_cids)) { // Перебор заявок с одним arm_id	
+    while ($row_cids = $result_cids->fetch_array()) { // Перебор заявок с одним arm_id	
         if ($row_cids["latlng"] == ''){
             $nolatlngcount++; // координаты не известны
         } else {
@@ -73,7 +73,7 @@ function clusterMember(){
                 $finded[0]['y'] = $ulng_y;
                 // перебираем ВСЕ кластеры
                 //$cursor_cluster = qSQL("SELECT id,coord FROM cluster order by level desc");
-                //while ($row_cluster = mysql_fetch_array($cursor_cluster)) {
+                //while ($row_cluster = $cursor_cluster->fetch_array()) {
                 for($i=0;$i<count($clusters);$i++){
                     // Запускаем поиск
                     $polygon->set_polygon($arPolygon[$i]);
@@ -108,12 +108,12 @@ function vlg_edit_cluster($user_id) {
             VALUES('" . $_POST["cname"] . "','" . $_POST["comment"] . "',1," . 
                 ($_POST["flag_pon"] ? 1 : 0) . "," . ($_POST["flag_cuprum"] ? 1 : 0) . "," . ($_POST["flag_optica"] ? 1 : 0) . ",'" . 
                 $user_id . "',1,'" . $_POST["coord"] . "'," . $_POST["cluster_level"] . ")");
-        $claster_id = mysql_insert_id();
+        $claster_id = $mysqli->insert_id();
         /*$coorArray = explode(" ", $_POST["coord"]);
         foreach ($coorArray as $coorEl) {
             $coor = explode(",", $coorEl);
             $queryDML = "INSERT INTO ps_claster(claster_id,lat,lng)VALUES(" . $claster_id . "," . $coor[0] . "," . $coor[1] .")";
-            $resultDML = mysql_query($queryDML);
+            $resultDML = $mysqli->query($queryDML);
         }*/
     } elseif(isset($_POST["coord"]) and strlen($_POST["coord"])>8){ 
     // сохранение кластера и есть что сохранять
@@ -135,7 +135,7 @@ function vlg_edit_cluster($user_id) {
         foreach ($coorArray as $coorEl) {
             $coor = explode(",", $coorEl);
             $queryDML = "INSERT INTO ps_claster(claster_id,lat,lng)VALUES(" .$_POST["claster_id"] . "," . $coor[0] . "," . $coor[1] .")";
-            $resultDML = mysql_query($queryDML);
+            $resultDML = $mysqli->query($queryDML);
         }*/
     }
     // получаем из cookie масштаб и центр карты
@@ -366,14 +366,14 @@ function vlg_edit_cluster($user_id) {
     }
     $result_claster = qSQL("SELECT * FROM cluster ".$testCluster." order by level,id");
     $i = 1;
-    while ($row_claster = mysql_fetch_array($result_claster)) {
+    while ($row_claster = $result_claster->fetch_array()) {
         $pBound=str_ireplace(",", "##", trim($row_claster["coord"]));
         $pBound=str_ireplace(" ", "},{lat: ", $pBound);
         $pBound="[{lat: ".str_ireplace("##", ", lng: ", $pBound)."}]";
         /*echo "pBound = [";
         $result_laln = qSQL("SELECT * FROM ps_claster where claster_id=" . $row_claster["id"] . " order by id");
         $isFirstVertex=TRUE;
-        while ($row_laln = mysql_fetch_array($result_laln)) {
+        while ($row_laln = $result_laln->fetch_array()) {
             if($isFirstVertex) $isFirstVertex=FALSE;
             else echo ",";
             echo "{lat: " . $row_laln["lat"] . ", lng: " . $row_laln["lng"] . "}";
@@ -416,7 +416,7 @@ function vlg_edit_cluster($user_id) {
     // добавляем заявки из ps_list для ориентировки при редактировании кластера
     /*$result_tasks = qSQL("SELECT arm_id, device_address,latlng, list_id FROM ps_list where latlng<>'' group by arm_id");
     $i = 1;
-    while ($row_tasks = mysql_fetch_array($result_tasks)) {
+    while ($row_tasks = $result_tasks->fetch_array()) {
         list ($lat, $lng) = explode(":", $row_tasks["latlng"]);
         echo "new google.maps.Marker({position: {lat: " . $lat . ", lng: " . $lng . 
             "}, map: map, icon: 'images/ball_green_s.png', title: '".$row_tasks["arm_id"]."'});

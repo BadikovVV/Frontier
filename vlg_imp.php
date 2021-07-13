@@ -270,20 +270,20 @@ function vlg_imp($mode){
         qSQL("update ps_arm_buffer set cs='B2B'");
         $result_taskl = qSQL("SELECT bufer_id, arm_id, device_address, technology, service FROM ps_arm_buffer where 1=1" . $set_mctet . 
                 " and cs='B2B' and status_name<>'Тест'");
-        echo "<br>Заявок для загрузки в БД после фильтрации: <b>" . mysql_num_rows($result_taskl) . "</b><br>";
+        echo "<br>Заявок для загрузки в БД после фильтрации: <b>" . $result_taskl->num_rows . "</b><br>";
         //
         //exit();
         $i = 1;
         $k = 1;
         $update_count=0;
         $insert_count=0;
-        while ($row_taskl = mysql_fetch_array($result_taskl)) {
+        while ($row_taskl = $result_taskl->fetch_array()) {
             echo "arm_id='" . $row_taskl["arm_id"] . "' and technology='" . $row_taskl["technology"] . "' and service='" . $row_taskl["service"] . "';";
             $cord_id = '';
             $result_check = qSQL("SELECT list_id, arm_id, technology, service, status_name FROM ps_list where arm_id='" . $row_taskl["arm_id"] . 
                     "' and technology='" . $row_taskl["technology"] . "' and service='" . $row_taskl["service"] . "'");
-            if (mysql_num_rows($result_check) == 1) { // Если в БД уже есть запись с этим id, технология одинакова и запись только одна
-                $row_check = mysql_fetch_array($result_check);
+            if ($result_check->num_rows == 1) { // Если в БД уже есть запись с этим id, технология одинакова и запись только одна
+                $row_check = $result_check->fetch_array();
                 $cord_id = $row_check["list_id"];
                 $result_update = qSQL("UPDATE ps_list psl,ps_arm_buffer pab
                         SET psl.dateinbegin=pab.dateinbegin,psl.latlng=pab.latlng,psl.ues_arm=pab.ues_arm, 
@@ -347,7 +347,7 @@ function vlg_imp($mode){
                             "' and psl.service='" . $row_check["service"] . "';");
                 echo "<br><b style='color: orandge'>$i</b> - запись " . $row_taskl["arm_id"] . " (" . $row_taskl["bufer_id"] . ") ОБНОВЛЕНА ";
                 $update_count = @$update_count + 1;
-            } elseif (mysql_num_rows($result_check) == 0) { // Если запись не найдена в БД (Новая запись), то добавим её как есть
+            } elseif ($result_check->num_rows == 0) { // Если запись не найдена в БД (Новая запись), то добавим её как есть
                 $result_copy = qSQL("INSERT INTO ps_list SELECT NULL,bufer_id,dateinbegin,latlng,ues_arm,ltc,arm_id,mpz_id,client_fio,
                     region,post_index,settlement,ul,home,corp,room,device_address,status_name,dateinstatus,taskonapp,service,count_service,
                     tariff_plan,sales_channel,dop_schannel,gts_sts,date_talking,date_reg_app,date_reg_podapp,reg_worder_tvp,end_hand,
@@ -368,9 +368,9 @@ function vlg_imp($mode){
                     source_inf,source_inf_other,flag_migration,reason_rejection,nls,delivery 
                     FROM ps_arm_buffer WHERE ps_arm_buffer.bufer_id='" . $row_taskl["bufer_id"] . "';");
                 $insert_count = @$insert_count + 1;
-                $cord_id = mysql_insert_id();
+                $cord_id = $mysqli->insert_id;
                 echo "<br><b style='color: green'>$i</b> - запись " . $row_taskl["arm_id"] . " (" . $row_taskl["bufer_id"] . ") 
-                    <b style='color: green;'>ДОБАВЛЕНА (новый ID: $cord_id)</b> дублей найдено = " . mysql_num_rows($result_check);
+                    <b style='color: green;'>ДОБАВЛЕНА (новый ID: $cord_id)</b> дублей найдено = " . $result_check->num_rows;
             } else
                 echo "<br><b style='color: red'>Для заявки " . $row_taskl["arm_id"] . " (" . $row_taskl["bufer_id"] . ") нет событий при загрузке</b>";
             // Создадим доп информацию для этой записи, если доп. информация отсутствует
@@ -378,13 +378,13 @@ function vlg_imp($mode){
                 $row_check["list_id"] = $cord_id;
             $result_check2 = qSQL("SELECT list_id, arm_id, technology, service, status_name FROM ps_list where arm_id='" . $row_taskl["arm_id"] . 
                     "' and technology='" . $row_taskl["technology"] . "' and service='" . $row_taskl["service"] . "'");
-            $row_check2 = mysql_fetch_array($result_check2);
+            $row_check2 = $result_check2->fetch_array();
             $result_sdop = qSQl("SELECT * FROM ps_list_dop where list_id='" . $row_check2["list_id"] . "' and arm_id='" . $row_check2["arm_id"] . "'");
-            if (mysql_num_rows($result_sdop) == 0) {
+            if ($result_sdop->num_rows == 0) {
                 // Заполним статус:
                 $result_slist = qSQL("SELECT pas.ps_status set_status FROM ps_list pls, ps_arm_status pas where pls.list_id='" . $row_check2["list_id"] . 
                         "' and pls.status_name=pas.status_name");
-                if($row_slist = mysql_fetch_array($result_slist)){
+                if($row_slist = $result_slist->fetch_array()){
                     $row_slist=$row_slist['set_status'];
                 } else { // такой статус АРМ не найден
                     $row_slist=10;

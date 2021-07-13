@@ -79,7 +79,7 @@ if (!defined("LOGINED")) {
 //function vlg_map($row_users) {
     /*if (@$_GET["add_ps_id"]) {
         $result_add_cid2 = qSQL("SELECT arm_id, list_id, device_address,latlng FROM ps_list where list_id='" . $_GET["add_ps_id"] . "'");
-        $row_add_cid2 = mysql_fetch_array($result_add_cid2);
+        $row_add_cid2 = $result_add_cid2->fetch_array();
         $_REQUEST["mapfilter_address"] = $row_add_cid2["device_address"];
     }*/ //elseif (!@$_POST["address"])
       //  $_POST["address"] = "г. Волгоград, ул. Мира, 16";

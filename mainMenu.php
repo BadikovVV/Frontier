@@ -12,8 +12,8 @@ function getCat(){
     $res=qSQL($sqlStr);
     //Создаем масив где ключ массива является ID меню
     $cat = array();
-    while($row = mysql_fetch_array($res)){ //$res->fetch_assoc()){
-//	print_r($row);
+    while($row = $res->fetch_array()){
+//    while($row = mysqli_fetch_array($res)){
         $cat[(int)$row["id"]] = $row;
     }
     return $cat;

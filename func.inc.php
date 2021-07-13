@@ -4,8 +4,8 @@
 //function usr_card($uid,$back=0)
 //{
 //$query_uid = "SELECT * FROM gusers WHERE id='".$uid."' ;";
-//	$result_uid = mysql_query($query_uid) or die ("<img src='./images/error.jpg' align='absmiddle'> <b style='color: red;'>Ошибка!</b><p> ".mysql_errno().": ".mysql_error());
-//		$row_uid = mysql_fetch_array($result_uid);
+//	$result_uid = $mysqli->query($query_uid) or die ("<img src='./images/error.jpg' align='absmiddle'> <b style='color: red;'>Ошибка!</b><p> ".mysql_errno().": ".mysql_error());
+//		$row_uid = mysqli_fetch_array($result_uid);
 //if (@$back==1)	$add_back = "&back=1";	else	$add_back = '';
 //if (@$back==2)	$add_style = " style='font-weight: normal;'";	else	$add_style = '';
 //$result = "<a".@$add_style." href='./window.php?action=uinfo".@$add_back."&uid=".$uid."'  onclick=\"return openNewWindow(this)\" title='Информация'><img src='./images/mini_card.gif' align='absmiddle'> ".$row_uid["fio"]."</a>";
@@ -52,8 +52,8 @@ function date_morec($udate)
 	if ($udate!='' and $udate!="00.00.0000")
 		{
 			$query_psmr = "SELECT STR_TO_DATE('".$udate."', '%d.%m.%Y') > CURDATE();";
-				$result_psmr = mysql_query($query_psmr) or die ("Query failed: psmr");
-					$row_psmr = mysql_fetch_array($result_psmr);
+				$result_psmr = $mysqli->query($query_psmr) or die ("Query failed: psmr");
+					$row_psmr = $result_psmr->fetch_array(MYSQLI_ASSOC);
 			$result = $row_psmr[0];	
 		}
 return $result; 
@@ -66,9 +66,9 @@ function date_more2($udate1,$udate2,$andravro="0")
 		{
 			if (@$andravro == 1)	$ravno = "=";
 			$query_psmr = "SELECT STR_TO_DATE('".$udate1."', '%d.%m.%Y') >".@$ravno." STR_TO_DATE('".$udate2."', '%d.%m.%Y');";
-				$result_psmr = mysql_query($query_psmr) or die ("Query failed: psmr");
+				$result_psmr = $mysqli->query($query_psmr) or die ("Query failed: psmr");
 				
-					$row_psmr = mysql_fetch_array($result_psmr);
+					$row_psmr = $result_psmr->fetch_array(MYSQLI_ASSOC );
 			$result = $row_psmr[0];	
 		}
 return @$result; 
@@ -100,9 +100,9 @@ for ($g=1;$g<500;$g++)
 {
         if ($g == 1)	{	$change_fname = $usfile;	$result = $change_fname;	}
         $query_ftest = "SELECT * FROM gfiles_tmp WHERE section='".$usection."' and file_name='".$change_fname."';";
-                $result_ftest = mysql_query($query_ftest) or die ("Query failed Sel from ftest");
-                        if (mysql_num_rows($result_ftest)>=1)
-                                {
+                $result_ftest = $mysqli->query($query_ftest) or die ("Query failed Sel from ftest");
+                        if ($result_ftest->num_rows >= 1)
+                               {
                                         // Переименовываем файл, текущее имя файла не допустимо
                                         $fmime = substr(strrchr($usfile,'.'), 1);
                                         list($fname_alone,) = explode ($fmime,$usfile);
@@ -121,8 +121,8 @@ switch ($get_status)
 	case "0":
 	//----- 0
 	$query_0e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_0 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND atype =  'add_card' );";
-			$result_0e = mysql_query($query_0e) or die ("Query failed:0e");
-				$row_0e = mysql_fetch_array($result_0e);
+			$result_0e = $mysqli->query($query_0e) or die ("Query failed:0e");
+				$row_0e = $result_0e->fetch_array(MYSQLI_ASSOC);
 		$date_enter = $row_0e['de_0'];
 
 	break;
@@ -130,16 +130,16 @@ switch ($get_status)
 	//----- В проработке
 	$query_1e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_1 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'send_work' or atype =  'get_return') );";
 		//$query_1e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_1 FROM ghistory WHERE bck_id='".$get_cid."' and atype='send_agreement';"; // Согласование ДФ
-			$result_1e = mysql_query($query_1e) or die ("Query failed: 1e");
-				$row_1e = mysql_fetch_array($result_1e);
+			$result_1e = $mysqli->query($query_1e) or die ("Query failed: 1e");
+				$row_1e = $result_1e->fetch_array(MYSQLI_ASSOC );
 		$date_enter = $row_1e['de_1'];
 
 	break;
 	case "8":
 	//----- Отклонено
 	$query_8e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_8 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'get_return' or `status`=8) );";
-			$result_8e = mysql_query($query_8e) or die ("Query failed: 8e");
-				$row_8e = mysql_fetch_array($result_8e);
+			$result_8e = $mysqli->query($query_8e) or die ("Query failed: 8e");
+				$row_8e = $result_8e->fetch_array(MYSQLI_ASSOC );
 		$date_enter = $row_8e['de_8'];
 
 	break;
@@ -147,56 +147,56 @@ switch ($get_status)
 		//----- Согласование ДФ
 		$query_7e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_7 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'send_agreement' or `status`=7) );";
 		//$query_7e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_7 FROM ghistory WHERE bck_id='".$get_cid."' and atype='send_agreement';"; // Согласование ДФ
-			$result_7e = mysql_query($query_7e) or die ("Query failed: 7e");
-				$row_7e = mysql_fetch_array($result_7e);
+			$result_7e = $mysqli->query($query_7e) or die ("Query failed: 7e");
+				$row_7e = mysqli_fetch_array($result_7e);
 		$date_enter = $row_7e['de_7'];
 	break;
 	case "6":
 		//----- ТВ проработана
 		$query_6e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_6 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."' AND (atype =  'get_tvcomplete' or `status`=6) );";
 		//$query_6e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_6 FROM ghistory WHERE bck_id='".$get_cid."' and atype='get_tvcomplete';"; // При наличии статуса Расчет конечных затрат
-			$result_6e = mysql_query($query_6e) or die ("Query failed: 6e");
-				$row_6e = mysql_fetch_array($result_6e);
+			$result_6e = $mysqli->query($query_6e) or die ("Query failed: 6e");
+				$row_6e = mysqli_fetch_array($result_6e);
 		$date_enter = $row_6e['de_6'];
 	break;
 	case "5":
 		//----- Выделение инвестиций
 		$query_5e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_5 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."' AND (atype =  'send_done1' or atype =  'get_kp' or `status`=5));";
 		//$query_5e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_5 FROM ghistory WHERE bck_id='".$get_cid."' and atype='send_done1';"; 
-			$result_5e = mysql_query($query_5e) or die ("Query failed: 5e");
-				$row_5e = mysql_fetch_array($result_5e);
+			$result_5e = $mysqli->query($query_5e) or die ("Query failed: 5e");
+				$row_5e = mysqli_fetch_array($result_5e);
 		$date_enter = $row_5e['de_5'];
 			break;
 	case "9":
 		//----- В реализации
 		$query_9e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_9 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'to_release' or `status`=9) );";
 		//$query_9e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_9 FROM ghistory WHERE bck_id='".$get_cid."' and atype='to_release';";
-			$result_9e = mysql_query($query_9e) or die ("Query failed: 9e");
-				$row_9e = mysql_fetch_array($result_9e);
+			$result_9e = $mysqli->query($query_9e) or die ("Query failed: 9e");
+				$row_9e = mysqli_fetch_array($result_9e);
 		$date_enter = $row_9e['de_9'];
 	break;
 	case "11":
 		//----- К включению
 		$query_11e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_11 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'to_on' or `status`=11) );";
 		//$query_11e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_11 FROM ghistory WHERE bck_id='".$get_cid."' and atype='to_on';";
-			$result_11e = mysql_query($query_11e) or die ("Query failed: 11e");
-				$row_11e = mysql_fetch_array($result_11e);
+			$result_11e = $mysqli->query($query_11e) or die ("Query failed: 11e");
+				$row_11e = mysqli_fetch_array($result_11e);
 		$date_enter = $row_11e['de_11'];
 	break;
 	case "2":
 		//----- Подключено
 		$query_2e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_2 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'on' or `status`=2) );";
 		//$query_2e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_2 FROM ghistory WHERE bck_id='".$get_cid."' and atype='on';";
-			$result_2e = mysql_query($query_2e) or die ("Query failed: 2e");
-				$row_2e = mysql_fetch_array($result_2e);
+			$result_2e = $mysqli->query($query_2e) or die ("Query failed: 2e");
+				$row_2e = mysqli_fetch_array($result_2e);
 		$date_enter = $row_2e['de_2'];
 	break;
 	case "10":
 		//----- Архив
 		$query_10e = "SELECT date_format(dtime,'%d.%m.%Y %H:%i:%s') de_10 FROM ghistory WHERE id = (SELECT MAX(id) FROM ghistory WHERE bck_id =  '".$get_cid."'  AND (atype =  'arh' or `status`=10) );";
 		//$query_10e = "SELECT max(id) end_id,date_format(dtime,'%d.%m.%Y %H:%i:%s') de_10 FROM ghistory WHERE bck_id='".$get_cid."' and atype='arh';";
-			$result_10e = mysql_query($query_10e) or die ("Query failed: 10e");
-				$row_10e = mysql_fetch_array($result_10e);
+			$result_10e = $mysqli->query($query_10e) or die ("Query failed: 10e");
+				$row_10e = mysqli_fetch_array($result_10e);
 		$date_enter = $row_10e['de_10'];
 	break;
 }
@@ -224,14 +224,14 @@ function get_count_work_day($countDay,$dateStart){	// Пересчет количества рабочи
 	for ($h=1;$h<=$timing;$h++)
 	{
 		$query_bdate = "SELECT DAYOFWEEK(str_to_date('".$cur_date."','%d.%m.%Y %H:%i:%s') + INTERVAL 1 DAY);";
-		$result_bdate = mysql_query($query_bdate) or die ("Query failed: bdate");
-			$row_bdate = mysql_fetch_array($result_bdate);								
+		$result_bdate = $mysqli->query($query_bdate) or die ("Query failed: bdate");
+			$row_bdate = mysqli_fetch_array($result_bdate);								
 		
 		if ($row_bdate[0] == 7 or $row_bdate[0] == 1) $timing = $timing + 1; else $good_day = $good_day + 1;
 		
 		$query_bdate1 = "SELECT date_format(str_to_date('".$cur_date."','%d.%m.%Y %H:%i:%s') + INTERVAL 1 DAY,'%d.%m.%Y %H:%i:%s');";
-		$result_bdate1 = mysql_query($query_bdate1) or die ("Query failed: bdate1");
-			$row_bdate1 = mysql_fetch_array($result_bdate1);
+		$result_bdate1 = $mysqli->query($query_bdate1) or die ("Query failed: bdate1");
+			$row_bdate1 = mysqli_fetch_array($result_bdate1);
 		$cur_date = $row_bdate1[0];
 		if ($good_day == $countDay) break;
 	}									
@@ -247,20 +247,20 @@ function get_date_work_day($countDay,$dateStart){	// Определение даты выполнения
     for ($h=1;$h<=$timing;$h++)
     {
             $query_bdate = "SELECT DAYOFWEEK(str_to_date('".$cur_date."','%d.%m.%Y %H:%i:%s') + INTERVAL 1 DAY);";
-            $result_bdate = mysql_query($query_bdate) or die ("Query failed: bdate");
-                    $row_bdate = mysql_fetch_array($result_bdate);								
+            $result_bdate = $mysqli->query($query_bdate) or die ("Query failed: bdate");
+                    $row_bdate = mysqli_fetch_array($result_bdate);								
 
             if ($row_bdate[0] == 7 or $row_bdate[0] == 1) $timing = $timing + 1; else $good_day = $good_day + 1;
 
             $query_bdate1 = "SELECT date_format(str_to_date('".$cur_date."','%d.%m.%Y %H:%i:%s') + INTERVAL 1 DAY,'%d.%m.%Y %H:%i:%s');";
-            $result_bdate1 = mysql_query($query_bdate1) or die ("Query failed: bdate1");
-                    $row_bdate1 = mysql_fetch_array($result_bdate1);
+            $result_bdate1 = $mysqli->query($query_bdate1) or die ("Query failed: bdate1");
+                    $row_bdate1 = mysqli_fetch_array($result_bdate1);
             $cur_date = $row_bdate1[0];
             if ($good_day == $countDay) break;
     }									
     $query_bdate2 = "SELECT date_format(str_to_date('".$dateStart."','%d.%m.%Y %H:%i:%s') + INTERVAL ".$timing." DAY, '%d.%m.%Y %H:%i:%s') as sdate;";
-                    $result_bdate2 = mysql_query($query_bdate2) or die ("Query failed: bdate2");
-                            $row_bdate2 = mysql_fetch_array($result_bdate2);
+                    $result_bdate2 = $mysqli->query($query_bdate2) or die ("Query failed: bdate2");
+                            $row_bdate2 = mysqli_fetch_array($result_bdate2);
     $result = $row_bdate2["sdate"];
 
     return $result;
@@ -275,20 +275,20 @@ function get_work_day($countDay,$dateStart){	// Определение даты после которой н
 	for ($h=1;$h<=$timing;$h++)
 	{
 		$query_bdate = "SELECT DAYOFWEEK(str_to_date('".$cur_date."','%d.%m.%Y %H:%i:%s') - INTERVAL 1 DAY);";
-		$result_bdate = mysql_query($query_bdate) or die ("Query failed: bdate");
-			$row_bdate = mysql_fetch_array($result_bdate);								
+		$result_bdate = $mysqli->query($query_bdate) or die ("Query failed: bdate");
+			$row_bdate = mysqli_fetch_array($result_bdate);								
 		
 		if ($row_bdate[0] == 7 or $row_bdate[0] == 1) $timing = $timing + 1; else $good_day = $good_day + 1;
 		
 		$query_bdate1 = "SELECT date_format(str_to_date('".$cur_date."','%d.%m.%Y %H:%i:%s') - INTERVAL 1 DAY,'%d.%m.%Y %H:%i:%s');";
-		$result_bdate1 = mysql_query($query_bdate1) or die ("Query failed: bdate1");
-			$row_bdate1 = mysql_fetch_array($result_bdate1);
+		$result_bdate1 = $mysqli->query($query_bdate1) or die ("Query failed: bdate1");
+			$row_bdate1 = mysqli_fetch_array($result_bdate1);
 		$cur_date = $row_bdate1[0];
 		if ($good_day == $countDay) break;
 	}									
 	$query_bdate2 = "SELECT date_format(str_to_date('".$dateStart."','%d.%m.%Y %H:%i:%s') - INTERVAL ".$timing." DAY, '%d.%m.%Y %H:%i:%s') as sdate;";
-			$result_bdate2 = mysql_query($query_bdate2) or die ("Query failed: bdate2");
-				$row_bdate2 = mysql_fetch_array($result_bdate2);
+			$result_bdate2 = $mysqli->query($query_bdate2) or die ("Query failed: bdate2");
+				$row_bdate2 = mysqli_fetch_array($result_bdate2);
 	$result = $row_bdate2["sdate"];
 	
 	return $result;
@@ -315,8 +315,8 @@ function retIdTimeOut($getId,$getDate) // Просрочка по ИД заявке. Формат: №ИД, Н
 	if ($getDate == '' or $getDate == '0000-00-00' or $getDate == '00.00.0000') $getDate = date ("d.m.Y H:i:s");
 	
 	$query_getStatus = "SELECT *, date_format(date_shem,'%d.%m.%Y %H:%i:%s') dshem, date_format(date_pltb,'%d.%m.%Y %H:%i:%s') as pl_date FROM bck WHERE id =  '".$getId."';";
-		$result_getStatus = mysql_query($query_getStatus) or die ("Query failed: getStatus");
-			$row_getStatus = mysql_fetch_array($result_getStatus);
+	$result_getStatus = $mysqli->query($query_getStatus) or die ("Query failed: getStatus");
+			$row_getStatus = mysqli_fetch_array($result_getStatus);
 	
 	$dateIn = ret_date($row_getStatus["status"],$getId);
 	

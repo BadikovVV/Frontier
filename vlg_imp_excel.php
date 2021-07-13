@@ -455,20 +455,20 @@ function vlg_imp_new($user_id,$cs){
 
         break;
         }
-        echo "<br>Заявок для загрузки в БД после фильтрации: <b>" . mysql_num_rows($result_taskl) . "</b><br>";
+        echo "<br>Заявок для загрузки в БД после фильтрации: <b>" . $result_taskl->num_rows . "</b><br>";
         //***************************************** aded 24-10-201
        //    exit();
         $i = 1;
         $k = 1;
         $update_count=0;
         $insert_count=0;
-        while ($row_taskl = mysql_fetch_array($result_taskl)) {
+        while ($row_taskl = $result_taskl->fetch_array()) {
             echo "arm_id='" . $row_taskl["arm_id"] . "' and technology='" . $row_taskl["technology"] . "' and service='" . $row_taskl["service"] . "';";
             $cord_id = '';
             $result_check = qSQL("SELECT list_id, arm_id, technology, service, status_name FROM ps_list where arm_id='" . $row_taskl["arm_id"] . 
                     "' and technology='" . $row_taskl["technology"] . "' and service='" . $row_taskl["service"] . "'");
-            if (mysql_num_rows($result_check) == 1) { // Если в БД уже есть запись с этим id, технология одинакова и запись только одна
-                $row_check = mysql_fetch_array($result_check);
+            if ($result_check->num_rows == 1) { // Если в БД уже есть запись с этим id, технология одинакова и запись только одна
+                $row_check = $result_check->fetch_array();
                 $cord_id = $row_check["list_id"];
                 // ver.1
                 //$result_update = qSQL("UPDATE ps_list psl,ps_arm_buffer pab
@@ -536,7 +536,7 @@ function vlg_imp_new($user_id,$cs){
                             "' and psl.service='" . $row_check["service"] . "';");
                 echo "<b style='color: orange'>$i</b> - запись " . $row_taskl["arm_id"] . " (" . $row_taskl["bufer_id"] . ") ОБНОВЛЕНА <br>";
                 $update_count = @$update_count + 1;
-            } elseif (mysql_num_rows($result_check) == 0) { // Если запись не найдена в БД (Новая запись), то добавим её как есть
+            } elseif ($result_chech->num_rows == 0) { // Если запись не найдена в БД (Новая запись), то добавим её как есть
                 $result_copy = qSQL("INSERT INTO ps_list SELECT NULL,bufer_id,dateinbegin,latlng,ues_arm,ltc,arm_id,mpz_id,client_fio,
                     region,post_index,settlement,ul,home,corp,room,device_address,status_name,dateinstatus,taskonapp,service,count_service,
                     tariff_plan,sales_channel,dop_schannel,gts_sts,date_talking,date_reg_app,date_reg_podapp,reg_worder_tvp,end_hand,
@@ -557,9 +557,9 @@ function vlg_imp_new($user_id,$cs){
                     source_inf,source_inf_other,flag_migration,reason_rejection,nls,delivery 
                     FROM ps_arm_buffer WHERE ps_arm_buffer.bufer_id='" . $row_taskl["bufer_id"] . "';");
                 $insert_count = @$insert_count + 1;
-                $cord_id = mysql_insert_id();
+                $cord_id = $mysqli->insert_id();
                 echo "<b style='color: green'>$i</b> - запись " . $row_taskl["arm_id"] . " (" . $row_taskl["bufer_id"] . ") 
-                    <b style='color: green;'>ДОБАВЛЕНА (новый ID: $cord_id)</b> дублей найдено = " . mysql_num_rows($result_check) . "<br>";
+                    <b style='color: green;'>ДОБАВЛЕНА (новый ID: $cord_id)</b> дублей найдено = " . $result_check->num_rows . "<br>";
             } else
                 echo "<b style='color: red'>Для заявки " . $row_taskl["arm_id"] . " (" . $row_taskl["bufer_id"] . ") нет событий при загрузке</b><br>";
             // Создадим доп информацию для этой записи, если доп. информация отсутствует
@@ -567,13 +567,13 @@ function vlg_imp_new($user_id,$cs){
                 $row_check["list_id"] = $cord_id;
             $result_check2 = qSQL("SELECT list_id, arm_id, technology, service, status_name FROM ps_list where arm_id='".$row_taskl["arm_id"] . 
                     "' and technology='".$row_taskl["technology"] ."' and service='".$row_taskl["service"] ."'");
-            $row_check2 = mysql_fetch_array($result_check2);
+            $row_check2 = $result_check2->fetch_array();
             $result_sdop = qSQl("SELECT * FROM ps_list_dop where list_id='".$row_check2["list_id"] ."' and arm_id='".$row_check2["arm_id"] ."'");
-            if (mysql_num_rows($result_sdop) == 0) {
+            if ($result_sdop->num_rows == 0) {
                 // Заполним статус:
                 $result_slist = qSQL("SELECT pas.ps_status set_status FROM ps_list pls, ps_arm_status pas where pls.list_id='" . $row_check2["list_id"] . 
                         "' and pls.status_name=pas.status_name");
-                if($row_slist = mysql_fetch_array($result_slist)){
+                if($row_slist = $result_slist->fetch_array()){
                     $row_slist=$row_slist['set_status'];
                 } else { // такой статус АРМ не найден
                     $row_slist=10;
@@ -604,7 +604,7 @@ function vlg_imp_new($user_id,$cs){
             }
             // Получим Координаты GOOGLE и заполним их
 /*            $result_tasks = qSQL("SELECT arm_id, device_address FROM ps_list where list_id='" . $cord_id . "' group by arm_id");
-            $row_tasks = mysql_fetch_array($result_tasks);
+            $row_tasks = $result_tasks->fetch_array($result_tasks);
             echo 'http://maps.google.com/maps/api/geocode/xml?address=' . urlencode(iconv('CP1251', 'UTF-8', $row_tasks["device_address"])) . '&language=ru';
             $string = getUrl('http://maps.google.com/maps/api/geocode/xml?address=' . urlencode(iconv('CP1251', 'UTF-8', $row_tasks["device_address"])) . '&language=ru');
             $xml = simplexml_load_string($string);
@@ -843,9 +843,6 @@ function importCall($fn,$cs) {
         break;
         }
         
-        //prot("importRequest $insertDML");
-//        if (!mysql_query($insertDML))
-//            echo "<br>Excel row " . $ri . " Err.no." . mysql_errno() . ": " . mysql_error() . "\n";
     }
     //exit();
 }
@@ -933,17 +930,17 @@ function importMTCLTC($fn) {
         //
         if (strlen($lMCTET) > 2 and strlen($lLTC) > 2) { // т.е. не "''"
             $resultSQL = qSQL("SELECT * FROM ps_mctet where name=" . $lMCTET . "");
-            if ($rowSQL = mysql_fetch_array($resultSQL)) {
+            if ($rowSQL = $resultSQL->fetch_array()) {
                 $idMCTET = $rowSQL["id"];
             } else {
                 //while ($rowSQL = mysql_fetch_array($resultSQL)) {
                 qSQL("INSERT INTO ps_mctet(name,coment,task)
                 VALUES (" . $lMCTET . ",'',0)");
-                $idMCTET = mysql_insert_id();
+                $idMCTET = $mysqli->insert_id();
             }
             //
             $resultSQL = qSQL("SELECT * FROM ps_ltc where name=" . $lLTC . "");
-            if ($rowSQL = mysql_fetch_array($resultSQL)) {
+            if ($rowSQL = $resultSQL->fetch_array()) {
                 
             } else {
                 //while ($rowSQL = mysql_fetch_array($resultSQL)) {
@@ -1349,7 +1346,7 @@ UPDATE com_obj SET oaddress=concat('Котельниковский, ',oaddress) where oaddress 
     //$result_cids = qSQL("SELECT * FROM com_obj where lay_type='".$lay_type."' and place_id not in ('exact','number','near','manual') ");
     if($lay_type==106){
         $result_cids = qSQL("SELECT * FROM addrcache where lat='' or lat is null"); //limit 0,100000");
-        while ($row_cids = mysql_fetch_array($result_cids)) {
+        while ($row_cids = $result_cids->fetch_array()) {
             echo "<br>-----------------------<br><b>Абонент: ".$row_cids["comment"].
                 " Поиск по Адресу: [".$row_cids["locality"] ." ".$row_cids["street"] ." ".$row_cids["building"] ."] в Yandex</b>";
                 str_replace('обл. ВОЛГОГРАДСКАЯ', '', $row_cids["locality"]);
@@ -1384,7 +1381,7 @@ UPDATE com_obj SET oaddress=concat('Котельниковский, ',oaddress) where oaddress 
         }
     } else {
         $result_cids = qSQL("SELECT * FROM com_obj where lay_type='".$lay_type."' ");
-        while ($row_cids = mysql_fetch_array($result_cids)) {
+        while ($row_cids = $result_cids->fetch_array()) {
             echo "<br>-----------------------<br><b>Объект: ".$row_cids["oname"]." Поиск по Адресу: [" . $row_cids["oaddress"] . "] в Yandex</b>";
             //if (1 or trim($row_cids["latlng"]) == ''){
                 $searchaddress=addressFormat($row_cids["oaddress"]);
@@ -1459,7 +1456,7 @@ function callcoord_old(){
         //$result_cids = qSQL("SELECT psl.*, psld.*,date_format(psl.dateinbegin,'%d.%m.%Y') as insert_date 
         //    FROM ps_list psl left join ps_list_dop psld using(list_id) WHERE length(trim(psl.corp))<4 and trim(psl.corp)!=''");
         
-        while ($row_cids = mysql_fetch_array($result_cids)) {
+        while ($row_cids = $result_cids->fetch_array()) {
             $searchaddress=trim($row_cids["region"])." ||| ".explode(" ",trim($row_cids["ltc"]))[0] ." ".trim($row_cids["settlement"])." ||| ".trim($row_cids["ul"])." ||| ".trim($row_cids["home"]);
             if(empty(trim($row_cids["corp"]))){
                 

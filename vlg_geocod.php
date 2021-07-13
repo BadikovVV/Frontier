@@ -68,7 +68,7 @@ function getSparkC()
     $badRec=0; // к-во записей для которых координаты не определены
     error_log(" Start geocoding from SPARK data");
 	
-        while ($row = mysql_fetch_array($rows,MYSQL_ASSOC)) {
+        while ($row = $rows->fetch_array(MYSQL_ASSOC)) {
             $coords= geocod($row["adrStr"]);
 //	    error_log("lat=".$coords["lat"]." for address ".$row["adrStr"]);
             $sqlStr = "update sparkData  

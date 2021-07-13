@@ -23,7 +23,7 @@ if(getReq("next_stage_status") and getReq("search_lid")!=-1){
         $next_stage_result=''; // групповое изменение статуса и передача заявок следующему исполнителю
         $rownum=0;
         $result_cid = qSQL(getReq("reestr_query"));
-        while ($row_cid = mysql_fetch_array($result_cid)) {
+        while ($row_cid = mysqli_fetch_array($result_cid)) {
             //$next_stage_result.=' '.$row_cid["lid"];
             SQL("UPDATE ps_list_dop SET status=". $next_stage_status2_0[0] ." WHERE lid='". $row_cid["lid"] ."'"); // меняем статус
             SQL("update callpath set shutdate=now() WHERE object_type=2 and lp_id='". $row_cid["lid"] ."' and shutdate is null"); // закрываем этап
@@ -617,7 +617,7 @@ $rownum=0;
 //$prev_row_cid=false;
 $current_arm_id=-1;
 $background_row_color="background: #DEF;";
-while ($row_cid = mysql_fetch_array($result_cid)) {
+while ($row_cid = mysqli_fetch_array($result_cid)) {
     if($current_arm_id!=$row_cid["arm_id"]){
         if($background_row_color==" ") $background_row_color="background: #DEF;";
         else $background_row_color=" ";

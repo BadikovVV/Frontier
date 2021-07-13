@@ -1232,7 +1232,7 @@ function projectPaybackSchedule($project_id){
                     // „итаем содержимое файла
                     $image = file_get_contents( $tempFile );
                     // Ёкранируем специальные символы в содержимом файла
-                    $image = mysql_escape_string( $image );
+                    $image = $mysqli->real_escape_string( $image );
                     // ‘ормируем запрос на добавление файла в базу данных
                     $result_id=SQL("INSERT INTO blobs (bcontent,uid) VALUES('".$image ."',".$row_users['uid'] .")");
                     $result_id=$result_id->insert_id();
@@ -1244,7 +1244,7 @@ function projectPaybackSchedule($project_id){
                         if ($g == 1)
                             $change_fname = $_FILES['drawing']['name'][$i];
                         $result_ftest = qSQL("SELECT * FROM ps_files WHERE section='" . $_REQUEST["project_id"] . "' and file_name='" . $change_fname . "'");
-                        if (mysql_num_rows($result_ftest) >= 1) {
+                        if ($result_ftest->num_rows >= 1) {
                             // ѕереименовываем файл, текущее им€ файла не допустимо
                             $fmime = substr(strrchr($_FILES['drawing']['name'][$i], '.'), 1);
                             list($fname_alone, ) = explode($fmime, $_FILES['drawing']['name'][$i]);
@@ -1259,7 +1259,7 @@ function projectPaybackSchedule($project_id){
                     if ($test != FALSE) {
                         $result_insert_file = qSQL("INSERT INTO ps_files values(NULL,'" . $_REQUEST["project_id"] . "','otuio_shema','-','" . $change_fname . 
                                 "','" . $udate2 . "','" . $row_users["uid"] . "',NULL)");
-                        $otuio_shema_id = mysql_insert_id();
+                        $otuio_shema_id = $mysqli->insert_id();
                     }*/
                 }
             }
@@ -1281,7 +1281,7 @@ function projectPaybackSchedule($project_id){
                 $next_stage_result=''; // групповое изменение статуса и передача за€вок следующему исполнителю
                 $rownum=0;
                 $result_cid = qSQL(getReq("reestr_query"));
-                while ($row_cid = mysql_fetch_array($result_cid)) {
+                while ($row_cid = $result_cid->fetch_array()) {
                     //$next_stage_result.=' '.$row_cid["lid"];
                     qSQL("UPDATE ps_list_dop SET status=". $next_stage_status2_0[0] ." WHERE lid='". $row_cid["lid"] ."'"); // мен€ем статус
                     qSQL("update callpath set shutdate=now() WHERE object_type=2 and lp_id='". $row_cid["lid"] ."' and shutdate is null"); // закрываем этап

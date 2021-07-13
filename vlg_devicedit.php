@@ -9,7 +9,7 @@
                         else
                             echo "<legend>&nbsp;<b style='color: orangered;'>Копирование оборудования</b>&nbsp;</legend>";
                         $result_dev1 = qSQL("SELECT * FROM ps_equip WHERE id='" . $_GET["did"] . "'");
-                        $row_dev1 = mysql_fetch_array($result_dev1);
+                        $row_dev1 = $result_dev1->fetch_array(MYSQL_ASSOC );
                         echo "<br><BIG style='color: midnightblue;'><b>" . $row_dev1["name"] . "</b></BIG> [" . $row_dev1["price"] . " руб.]</p>";
                     } else {
                         echo "<legend>&nbsp;<b style='color: orangered;'>Добавление нового оборудования</b>&nbsp</legend>";
@@ -39,7 +39,7 @@
                     echo " <input type='button' value='Добавить новое' Onclick='javascript:window.open(\"./?c=7&action=newDeviceList&do=copyform\",\"_self\")'><p>";
                 if (@$_GET["do"] == "copy" and @ $_GET["did"] != 9999) {
                     $result_dev2 = qSQL("SELECT * FROM ps_equip WHERE id='" . $_GET["did"] . "'");
-                    $row_dev2 = mysql_fetch_array($result_dev2);
+                    $row_dev2 = $result_dev2->fetch_array(MYSQL_ASSOC);
                     if (@$_POST["dname"] != '' and @ $_POST["dprice"] != '') {
                         if (@$_POST["cb_for_report_input"] and @ $_POST["cb_for_report_input"] == "true")
                             $_POST["cb_for_report_input"] = 1;
@@ -67,7 +67,7 @@
                 }
                 if (@$_GET["do"] == "hide" and @ $_GET["did"] != 9999 and @ $_GET["did"] and @ $_GET["did"] != '') {
                     $result_dev2 = qSQL("SELECT * FROM ps_equip WHERE id='" . $_GET["did"] . "'");
-                    $row_dev2 = mysql_fetch_array($result_dev2);
+                    $row_dev2 = $result_dev2->fetch_array(MYSQL_ASSOC);
                     if ($row_dev2["old"] == 1)
                         $dotset = 0;
                     else
@@ -76,9 +76,9 @@
                 }
                 echo "<table border='1' cellspacing='0' bordercolor='black' bordercolordark='white' width='100%'>";
                 $query_dev = "SELECT * FROM ps_equip order by pgroup;";
-                $result_dev = mysql_query($query_dev) or die("Query failed: dev");
+                $result_dev = $mysqli->query($query_dev) or die("Query failed: dev");
                 echo "<tr bgcolor='lightgrey'><td><b>ID</b></td><td><b>Раздел</b></td><td><b>Артикул</b></td><td><b>Наименование комплектующего в составе оборудования</b></td><td><b>Стоимость, руб.</b></td><td><b>Отображать в отчетах.</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>";
-                while ($row_dev = mysql_fetch_array($result_dev)) {
+                while ($row_dev = $result_dev->fetch_array(MYSQL_ASSOC)) {
                     if (@$row_dev["for_report"] == 1)
                         $ch_for_report = " checked";
                     else

@@ -383,7 +383,7 @@ if(getReq("lid")==-1){
                         $tariffCursor=qSQL("SELECT t.*,s.sname FROM tariff t left join service s on t.service_id=s.id where tech_id=".$call_row_dop["tpid"].
                                 " union SELECT -1,-1,3,0.0,0.0,900,NULL,'удалить ТП',999,'удалить ТП',0.0,0,1,'удалить ТП'");
                         //$tariffCursor=qSQL("SELECT t.*,s.sname FROM tariff t left join service s on t.service_id=s.id where tech_id=3");
-                        while ($rowTariffCursor = mysql_fetch_array($tariffCursor)) {
+                        while ($rowTariffCursor = $tariffCursor->fetch_array( MYSQL_ASSOC )) {
                             echo "<tr><td>".$rowTariffCursor["speed"]." Мб/с</td><td>".$rowTariffCursor["sname"].
                                     "</td><td style='background-color: #FDD; '><a class=\"tariff_selection_close\" style='cursor: pointer;' 
                                 onclick=\"
@@ -408,7 +408,7 @@ if(getReq("lid")==-1){
                         <b>Выберите тариф MVNO</b>
                         <table style='text-align: center;'><tr><td>Услуга</td><td>платёж 1-го периода, руб.</td><td>платёж 2-го периода, руб.)</td></tr>";
                         $tariffCursor=qSQL("SELECT t.*,s.sname FROM tariff t left join service s on t.service_id=s.id where tech_id=40 ");
-                        while ($rowTariffCursor = mysql_fetch_array($tariffCursor)) {
+                        while ($rowTariffCursor = $tariffCursor->fetch_array(MYSQL_ASSOC )) {
                             echo "<tr><td>".$rowTariffCursor["sname"].
                                     "</td><td><a class=\"tariff_selection_close\" style='cursor: pointer;' 
                                 onclick=\"

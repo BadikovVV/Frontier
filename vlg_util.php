@@ -153,10 +153,12 @@ return TRUE;
 // исполнение SQL запроса и !!! выход в случае ошибки !!!
 // gпри ошибке показывает - запрос, ошибку, стек вызовов
 function qSQL($query) {
-    $res = mysql_query($query);
+    global $mysqli;
+    $res = $mysqli->query($query);
+    //print_r($res);
     if (!$res) {
         echo "<br>$query";
-        echo "<br>Err.no." . mysql_errno() . ": " . mysql_error() . "\n";
+        echo "<br>Err.no." . $mysqli->errno . ": " . $mysqli->error . "\n";
         $debug=debug_backtrace(); 
         $errmsg="";
         $count=count($debug);     
@@ -299,16 +301,17 @@ class CSQL{
 // устарело - используйте rSQL
 function fSQL($query) {
     exit("устарело - используйте rSQL");
-    $res = mysql_query($query);
+    global $mysqli;
+    $res = $mysqli->query($query);
     if (!$res) {
         echo "<br>$query";
-        echo "<br>Err.no." . mysql_errno() . ": " . mysql_error() . "\n";
+        echo "<br>Err.no." . $mysqli->errno . ": " . $mysqli->error . "\n";
         exit();
     }
-    $first_row = mysql_fetch_array($res);
+    $first_row = $res->fetch_array();
     if (!$first_row) {
         //echo "<br>$query";
-        //echo "<br>Err.no." . mysql_errno() . ": " . mysql_error() . "\n";
+        //echo "<br>Err.no." . $mysqli->errno . ": " . $mysqli->error . "\n";
         //exit();
         return $first_row;
     }
@@ -342,7 +345,8 @@ function select($elName,$query,$initial="",$default="все варианты"){
     $res=qSQL($query);
         $result=$result."<select name=\"".$elName."\" >";
         if($default==""){
-            $row=mysql_fetch_array($res);
+            $row= $res->fetch_array();
+//$mysqli->mysql_fetch_array($res);
             if($row[0]==$initial)
                 $result=$result."<option selected>".$row[0]."</option>" ;
             else
@@ -353,7 +357,7 @@ function select($elName,$query,$initial="",$default="все варианты"){
             else
                 $result=$result."<option>".$default."</option>" ;
         }
-        while($row=mysql_fetch_array($res)) {
+        while($row=$res->fetch_array()) {
             if($row[0]==$initial)
                 $result=$result."<option selected>".$row[0]."</option>" ;
             else
@@ -370,13 +374,13 @@ function select2($elName,$query,$initial=""){
     //mysql_select_db($SQLSchema,$ms);
     $res=qSQL($query);
         $result=$result."<select name=\"".$elName."\" >";
-            $row=mysql_fetch_array($res);
+            $row=$res->fetch_array();
             if($row[0]==$initial)
                 $result=$result."<option value=\"".$row[1]."\" selected>".$row[0]."</option>" ;
             else
                 $result=$result."<option value=\"".$row[1]."\">".$row[0]."</option>" ;
 
-        while($row=mysql_fetch_array($res)) {
+        while($row=$res->fetch_array()) {
             if($row[0]==$initial)
                 $result=$result."<option value=\"".$row[1]."\" selected>".$row[0]."</option>" ;
             else
@@ -394,13 +398,13 @@ function select2($elName,$query,$initial=""){
     //mysql_select_db($SQLSchema,$ms);
     $res=qSQL($query);
         $result=$result."<select name=\"".$elName."\" multiple='multiple'>";
-            $row=mysql_fetch_array($res);
+            $row=$res->fetch_array();
             if($row[0]==$initial)
                 $result=$result."<option value=\"".$row[1]."\" selected>".$row[0]."</option>" ;
             else
                 $result=$result."<option value=\"".$row[1]."\">".$row[0]."</option>" ;
 
-        while($row=mysql_fetch_array($res)) {
+        while($row=$res->fetch_array()) {
             if($row[0]==$initial)
                 $result=$result."<option value=\"".$row[1]."\" selected>".$row[0]."</option>" ;
             else

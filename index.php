@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', '1'); 
 ###################################
+
 require_once 'vlg_php_header.php';
 //
     if(isset($_REQUEST["mapfilter_address"])){
@@ -55,14 +56,12 @@ require_once 'vlg_php_header.php';
 // д.б. перед "require_once 'vlg_reestr.php';" и т.п.
     syncReqCook("mapfilter","ltc","выберите...");
 //
+
 require_once 'vlg_util_ps.php';
 require_once 'func.inc.php';
 require_once 'func_date.inc.php';
-
 require_once 'vlg_header.php'; // здесь начало HTML страницы
-
 require_once 'vlg_imp.php';
-
 require_once 'vlg_reestr.php';
 require_once 'vlg_edit_cluster.php';
 ?>

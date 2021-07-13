@@ -5,9 +5,9 @@ error_reporting(E_ALL);
 header("Content-Type: text/html; charset=windows-1251"); //charset=utf8");
 chdir("/var/www/html/");
 include "db_connect.php";
-mysql_select_db("private_sector") or die("Could not select database");
-mysql_query("SET NAMES 'cp1251'");
-mysql_query("SET CHARACTER SET 'cp1251'");
+//mysql_select_db("private_sector") or die("Could not select database");
+$mysqli->query("SET NAMES 'cp1251'");
+$mysqli->query("SET CHARACTER SET 'cp1251'");
 $file_path = "/var/www/html/cs/";
 require_once "PHPExcel/Classes/PHPExcel.php";
 require_once 'vlg_util.php';
@@ -96,26 +96,17 @@ class CExcel{
 if ($ip != "10.147.1.19" or ! @$_GET["its_server"]) {
     if (@$_COOKIE['rtcomug'][0] and @ $_COOKIE['rtcomug'][0] != '' and @ $_COOKIE['rtcomug'][1] and @ $_COOKIE['rtcomug'][1] != '' and @ $_GET['action'] != "logout") {// Если в куках логин и пароль
         $result_users = qSQL("SELECT * FROM ps_users WHERE login='" . $_COOKIE['rtcomug'][0] . "'");
-        if (mysql_num_rows($result_users) == 1) {
-            $row_users = mysql_fetch_array($result_users);
+        if ($result_users->num_rows == 1) {
+            $row_users = $result_users->fetch_array(MYSQL_ASSOC);
             if ($row_users["pass"] == $_COOKIE['rtcomug'][1]) {
                 if ($row_users["status"] == "1") {
                     define("LOGINED", "TRUE", TRUE);  // Активный пользователь
-                    /*$q_group = "SELECT * FROM ggroup WHERE id='" . $row_users["ugroup"] . "';";
-                    $result_group = mysql_query($q_group) or die("Query failed. gruop");
-                    $row_group = mysql_fetch_array($result_group);*/
                 }
             }
-            //$result_group = qSQL("SELECT * FROM ggroup WHERE id='" . $row_users["ugroup"] . "'");
-            //$row_group = mysql_fetch_array($result_group);
         }
     }
 } else {
     define("LOGINED", "TRUE", TRUE);
-    //$result_users = qSQL("SELECT * FROM ps_users WHERE id='1'");
-    //$row_users = mysql_fetch_array($result_users);
-    //$result_group = qSQL("SELECT * FROM ggroup WHERE id='" . $row_users["ugroup"] . "'");
-    //$row_group = mysql_fetch_array($result_group);
 }
 //d($_REQUEST);d("<br>");
 if (defined("LOGINED") == TRUE) { // DEFINE TRUE
@@ -1345,7 +1336,7 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
                     "Необходимость установки оборудования СПД;Наличие PON;Комментарий ТБ";
             // Добавляем поля АРМ в полном составе:
             $result_armfields = qSQL("SELECT * FROM dictionary where `table`='ps_list' order by serial");
-            while ($row_armfields = mysql_fetch_array($result_armfields))
+            while ($row_armfields = $result_armfields->fetch_array(MYSQL_ASSOC))
                 $caption = $caption . ";" . $row_armfields["full_name"];
             fwrite($fp, $caption);
             //if (!@$_POST["cid"] or count(@$_POST["cid"]) < 1) die("<br><b style='color: red;'>Ошибка. Ни одна заявка не была выбрана.</b>");
@@ -1353,7 +1344,7 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
             $h = 1;
             $result_reestr_query=qSQL($_REQUEST['reestr_query']);
             //while ($kk < count($_POST["cid"])) {
-            while ($row_result_reestr_query = mysql_fetch_array($result_reestr_query)) {
+            while ($row_result_reestr_query = $result_reestr_query->fetch_array(MYSQL_ASSOC)) {
 //echo "<br>".$k." = ".$_POST["cid"][$k];
 //date_format(add_date,'%d.%m.%Y %H:%i:%s')
                 //$result_cids = qSQL("SELECT psl.*, psld.*,date_format(psl.dateinbegin,'%d.%m.%Y') as insert_date "
@@ -1366,7 +1357,7 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
                         rSQL("select project_name from ps_project where project_id=".$row_result_reestr_query["project_id"])["project_name"];
                 $result_cids = qSQL("SELECT psl.*, psld.*,date_format(psl.dateinbegin,'%d.%m.%Y') as insert_date 
                     FROM ps_list psl, ps_list_dop psld WHERE psl.list_id=psld.list_id and psld.lid=".$row_result_reestr_query["lid"]."");
-                while ($row_cids = mysql_fetch_array($result_cids)) { // Перебор заявок с одним arm_id	
+                while ($row_cids = $result_cids->fetch_array(MYSQL_ASSOC)) { // Перебор заявок с одним arm_id	
 // Поиск Кластера по координатам (Если не найден, то сохранить в новом поле: claster_id)
 //echo "<br>ARM_ID = ".$_POST["cid"][$kk]."</b>";	
 //echo " - latlng = ".$row_cids["latlng"];
@@ -1377,13 +1368,13 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
                         $finded[0]['x'] = $ulat_x;
                         $finded[0]['y'] = $ulng_y;
                         $result_claster = qSQL("SELECT claster_id FROM ps_claster group by claster_id");
-                        while ($row_claster = mysql_fetch_array($result_claster)) {
+                        while ($row_claster = $result_claster->fetch_array(MYSQL_ASSOC)) {
 //echo "<br> - Поиск координаты latlng = ".$row_cids["latlng"]." в Кластере № ".$row_claster["claster_id"];
 // Заполнение массива вершин многоугольника
                             $result_19 = qSQL("SELECT * FROM ps_claster where claster_id='" . $row_claster["claster_id"] . "'");
                             $claser_array = array();
                             $k = 1;
-                            while ($row_19 = mysql_fetch_array($result_19)) {
+                            while ($row_19 = $result_19->fetch_array(MYSQL_ASSOC )) {
                                 $claser_array[$k][0] = $row_19["lat"];
                                 $claser_array[$k][1] = $row_19["lng"];
                                 $k++;
@@ -1413,7 +1404,7 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
                         $claster_num .= ". ".$row_result_reestr_query["clusname"];
                     }
                     $result_ps_status = qSQL("SELECT name FROM ps_status WHERE id='" . $row_cids["status"] . "'");
-                    $row_ps_status = mysql_fetch_array($result_ps_status);
+                    $row_ps_status = $result_ps_status->fetch_array(MYSQL_ASSOC );
                     $ps_status_name = $row_ps_status["name"];
                     $row_cids["zatrat_smr"] = number_format($row_cids["zatrat_smr"], 2, '.', ' ');
                     $row_cids["dev_summ"] = number_format($row_cids["dev_summ"], 2, '.', ' ');
@@ -1421,7 +1412,7 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
                     $row_cids["month_pay"] = number_format($row_cids["month_pay"], 2, '.', ' ');
 
                     $result_fo = qSQL("SELECT * FROM files where otype=2 and oid=".$row_cids["lid"] ."");
-                    if (mysql_num_rows($result_fo) > 0)
+                    if ($result_fo->num_rows > 0)
                         $shema_files = "x";
                     else
                         $shema_files = '';
@@ -1532,7 +1523,7 @@ if (defined("LOGINED") == TRUE) { // DEFINE TRUE
         break; // case "2"
     }
 }
-@mysql_close(@$link);
+@$mysqli->close(@$link);
 /*
   geometry – содержит следующую информацию:
 

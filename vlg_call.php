@@ -250,7 +250,7 @@ if(getReq("lid")==-1){
                     // „итаем содержимое файла
                     $image = file_get_contents( $tempFile );
                     // Ёкранируем специальные символы в содержимом файла
-                    $image = mysql_escape_string( $image );
+                    $image = $mysqli->escape_string( $image );
                     // ‘ормируем запрос на добавление файла в базу данных
                     //echo "<!--INSERT INTO blobs (bcontent,uid) VALUES('',".$row_users['uid'] .")-->";
                     $result_id=SQL("INSERT INTO blobs (bcontent,uid) VALUES('".$image ."',".$row_users['uid'] .")");
@@ -263,7 +263,7 @@ if(getReq("lid")==-1){
                         if ($g == 1)
                             $change_fname = $_FILES['drawing']['name'][$i];
                         $result_ftest = qSQL("SELECT * FROM ps_files WHERE section='" . $_REQUEST["project_id"] . "' and file_name='" . $change_fname . "'");
-                        if (mysql_num_rows($result_ftest) >= 1) {
+                        if ($result_ftest->num_rows >= 1) {
                             // ѕереименовываем файл, текущее им€ файла не допустимо
                             $fmime = substr(strrchr($_FILES['drawing']['name'][$i], '.'), 1);
                             list($fname_alone, ) = explode($fmime, $_FILES['drawing']['name'][$i]);
@@ -278,7 +278,7 @@ if(getReq("lid")==-1){
                     if ($test != FALSE) {
                         $result_insert_file = qSQL("INSERT INTO ps_files values(NULL,'" . $_REQUEST["project_id"] . "','otuio_shema','-','" . $change_fname . 
                                 "','" . $udate2 . "','" . $row_users["uid"] . "',NULL)");
-                        $otuio_shema_id = mysql_insert_id();
+                        $otuio_shema_id = $mysqli->insert_id();
                     }*/
                 }
             }
@@ -328,7 +328,7 @@ if(getReq("lid")==-1){
                             rSQL("SELECT name FROM private_sector.ps_teh_podkl where id=".$call_row_dop["tpid"])["name"] . ")</b>
                         <table style='text-align: center;'><tr><td>”слуга</td><td>инсталл€ционный, руб.</td><td>ежемес€чный, руб.)</td></tr>";
                         $tariffCursor=qSQL("SELECT t.*,s.sname FROM tariff t left join service s on t.service_id=s.id where tech_id=".$call_row_dop["tpid"]);
-                        while ($rowTariffCursor = mysql_fetch_array($tariffCursor)) {
+                        while ($rowTariffCursor = $tariffCursor->fetch_array(MYSQL_ASSOC)) {
                             echo "<tr><td>".$rowTariffCursor["sname"]."</td><td>".
                             $rowTariffCursor["install"]."</td><td><a class=\"tariff_selection_close\" style='cursor: pointer;' 
                                 onclick=\"document.new_project.month_pay.value=".$rowTariffCursor["month_pay"].";\">".

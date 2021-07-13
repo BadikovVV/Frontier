@@ -4,9 +4,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header("Content-Type: text/html; charset=windows-1251"); //charset=utf8");
 include "db_connect.php";
-mysql_select_db("private_sector") or die("Could not select database");
-mysql_query("SET NAMES 'cp1251'");
-mysql_query("SET CHARACTER SET 'cp1251'");
+
+$mysqli->select_db("private_sector") or die("Could not select database");
+$mysqli->query("SET NAMES 'cp1251'");
+$mysqli->query("SET CHARACTER SET 'cp1251'");
 require_once "PHPExcel/Classes/PHPExcel.php";
 require_once 'vlg_util.php';
 require_once 'vlg_CExcel.php';
@@ -233,6 +234,6 @@ require_once 'vlg_CExcel.php';
         case "3": // 
         break; // case "3"
     }
-mysql_close(@$link);
+$mysqli->close(@$link);
 
 ?>

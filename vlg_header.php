@@ -17,16 +17,18 @@ $uyear = date("Y");
 $udate = date("d.m.Y");
 $udate_time2 = date("d.m.Y H:i:s");
 $udate_time = date("Y-m-d H:i:s");
+global $mysqli;
 // Активация нового пользователь уже заведённого в БД, его первый вход с передачей ключа hash
-if (@$_GET['action'] == "active") {
+if (@$_GET['action'] == "active") 
+{
     echo "<br><br><b>Активация пользователя...</b><br><br>";
     $message = "<img src='./images/loading.gif'>";
     $result_user = qSQL("SELECT * FROM ps_users WHERE login='" . $_GET["login"] . "'");
-    if (mysql_num_rows($result_user) == 1) {
-        $row = mysql_fetch_array($result_user);
+    if ($result_users->num_rows == 1) {
+        $row = $result_users->fetch_array();
         if ($row["hash"] == $_GET["hash"]) { // Проверим совпадает ли контрольная сумма при авторизации
             $q_update = "UPDATE ps_users SET status='1' WHERE id='" . $row["id"] . "';";
-            $result_update = mysql_query($q_update) or die("<br><br><br><center><img border='0' src='./images/aff_cross.gif' align='absmiddle'> <b style='text-align: center; color: red'>Query failed. Не могу выполнить активацию пользователя!</b></center>");
+            $result_update = $mysqli->query($q_update) or die("<br><br><br><center><img border='0' src='./images/aff_cross.gif' align='absmiddle'> <b style='text-align: center; color: red'>Query failed. Не могу выполнить активацию пользователя!</b></center>");
         } // Если не совпала контрольная суума, но пользователь нашелся
         else
             echo "<br><br><img border='0' src='./images/aff_cross.gif' align='absmiddle'> 
@@ -38,7 +40,8 @@ if (@$_GET['action'] == "active") {
 	redir();
 	</SCRIPT>";
 }
-if (@$_GET['action'] == "logout") {
+if (@$_GET['action'] == "logout") 
+{
     $uid=rSQL("SELECT uid FROM ps_users WHERE login='". $_COOKIE['rtcomug'][0] . "'")["uid"];
     qSQL("INSERT INTO occurrence(id,otype,uid,dateinsert,ipaddress)
         VALUES (NULL,2,". (isset($uid) ? $uid : -1)
@@ -70,8 +73,8 @@ if (@$_COOKIE['rtcomug'][0] and @ $_COOKIE['rtcomug'][0] != '' and @ $_COOKIE['r
 //echo "<br>[1]".$_COOKIE['rtcomug'][1];
 //echo "<br>[2]".$_COOKIE['rtcomug'][2];
     $result_users = qSQL("SELECT * FROM ps_users WHERE login='" . $_COOKIE['rtcomug'][0] . "'");
-    if (mysql_num_rows($result_users) == 1) {
-        $row_users = mysql_fetch_array($result_users);
+    if ($result_users->num_rows == 1) {
+        $row_users = $result_users->fetch_array();
         if ($row_users["pass"] == $_COOKIE['rtcomug'][1]) {
             if ($row_users["status"] == "2")  // 2 заблокированный пользователь
                 $message = "<b style='color: red'>Учетная запись " . $_COOKIE['rtcomug'][0] . 
@@ -104,7 +107,6 @@ if (@$_COOKIE['rtcomug'][0] and @ $_COOKIE['rtcomug'][0] != '' and @ $_COOKIE['r
 //													} // Есть есть куки у пользователя
 else { // ЕСЛИ НЕТ
 //echo "<br> No cookies ? no login? ".isset($_POST["login"]);
-
   if(isset($_POST["login"]) && noSQLInj($_POST["login"])){
 //	echo "<br> trying to login";
     // Попросим авторизоваться
@@ -113,8 +115,8 @@ else { // ЕСЛИ НЕТ
         $_POST["login"] = str_replace(" ", "", $_POST["login"]);
         $_POST["pass"] = str_replace(" ", "", $_POST["pass"]);
         $result_users = qSQL("SELECT * FROM ps_users WHERE login='" . $_POST["login"] . "'");
-        if (mysql_num_rows($result_users) != 0) {
-            while ($row_users = mysql_fetch_array($result_users)) {
+        if ($result_users->num_rows != 0) {
+            while ($row_users = $result_users->fetch_array()) {
                 if ($row_users["login"] == @$_POST["login"]) {
                     if ($row_users["status"] == "0") {
                         $message = "<center><img src='./images/cross.gif' align='absmiddle'> <b style='color: red'>Учетная запись <b style='color: black;'>" . 
@@ -254,10 +256,10 @@ else { // ЕСЛИ НЕТ
         <TD height='40' colspan='2'>";
         if (defined("LOGINED") == TRUE) {
             $result_gruop = qSQL("SELECT * FROM ggroup WHERE id='" . $row_users["ugroup"] . "'");
-            $row_gruop = mysql_fetch_array($result_gruop);
+            $row_gruop = $result_users->fetch_array();
             /* $q_settings = "SELECT * FROM gsettings;";
-              $result_settings = mysql_query($q_settings) or die ("Query failed. settings");
-              $row_settings = mysql_fetch_array($result_settings); */
+              $result_settings = $mysqli->query($q_settings) or die ("Query failed. settings");
+              $row_settings = $result_settings->fetch_array($result_settings); */
             //$locate_glob = $_SERVER['REQUEST_URI'];
             //$query_uget = explode("?", $locate_glob);
             global $ubord;
